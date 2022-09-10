@@ -6,6 +6,8 @@ def plot_automaton(transition_function, starting_state, final_states):
     g = graphviz.Digraph('G', format='png', directory='./out')
 
     g.attr('node', shape='doublecircle')
+    g.graph_attr['rankdir'] = 'LR'
+
     for final_state in final_states:
         g.node(final_state)
 
