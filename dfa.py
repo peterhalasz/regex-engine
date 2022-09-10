@@ -1,6 +1,10 @@
 from plotter import plot_automaton
 from utils import validate_automaton
 
+""" Deterministic Finite Automaton.
+
+A simple implementation of a dfa.
+"""
 def main():
     # A finite set of states. Usually denoted by Q.
     states = {"A", "B", "C", "D", "E", "F", "G"}
@@ -25,8 +29,9 @@ def main():
     # F has to be a subset of Q.
     final_states = {"G"}
 
-    plot_automaton(transition_function, starting_state, final_states)
+    # plot_automaton(transition_function, starting_state, final_states)
 
+    # The string the dfa will process.
     test_input_string = "0000011001"
 
     if not validate_automaton(input_symbols, test_input_string, states, starting_state,
@@ -36,7 +41,7 @@ def main():
 
     current_state = starting_state
     for input_symbol in test_input_string:
-        print(current_state, input_symbol)
+        print(current_state, " ==> " , input_symbol)
 
         if (current_state, input_symbol) not in transition_function:
             print("FAILED")
