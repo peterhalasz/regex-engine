@@ -1,3 +1,5 @@
+from utils import validate_automaton
+
 def main():
     # A finite set of states. Usually denoted by Q.
     states = {"A", "B", "C"}
@@ -18,6 +20,11 @@ def main():
     final_states = {"C"}
 
     test_input_string = "0000010"
+
+    if not validate_automaton(input_symbols, test_input_string, states, starting_state,
+            final_states, transition_function):
+        print("Incorrect automaton")
+        return
 
     current_state = starting_state
     for input_symbol in test_input_string:
