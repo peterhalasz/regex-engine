@@ -1,3 +1,4 @@
+from plotter import plot_automaton
 from utils import validate_automaton
 
 def main():
@@ -18,6 +19,8 @@ def main():
     # A finite set of accepting / final states. Usually denoted by F.
     # F has to be a subset of Q.
     final_states = {"C"}
+
+    plot_automaton(transition_function, starting_state, final_states)
 
     test_input_string = "0000010"
 
@@ -43,3 +46,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
