@@ -1,11 +1,11 @@
 from plotter import plot_automaton
 from utils import validate_automaton, validate_symbols
 
-""" Deterministic Finite Automaton.
+""" Non-deterministic Finite Automaton.
 
-A simple implementation of a dfa.
+A simple implementation of an nfa.
 """
-class Dfa():
+class Nfa():
     def __init__(self, states, input_symbols, transition_function, starting_state, final_states):
         # A finite set of states. Usually denoted by Q.
         self.states = states
@@ -14,8 +14,8 @@ class Dfa():
         self.input_symbols = input_symbols
 
         # Transition function. Usually denoted by delta.
-        # Here implemented as a tuple to string dict.
-        # (state, input symbol) -> next state
+        # Here implemented as a tuple to set of strings dict.
+        # (state, input symbol) -> next states
         self.transition_function = transition_function
 
         # Start state. Usually denoted by q0.
@@ -35,48 +35,25 @@ class Dfa():
         plot_automaton(self.transition_function, self.starting_state, self.final_states)
 
     def is_string_accepted(self, input_string):
-        if not validate_symbols(self.input_symbols, input_string):
-            print("Input string is not part of the input symbols")
-            return False
-
-        current_state = self.starting_state
-        for input_symbol in input_string:
-            print(current_state, " ==> " , input_symbol)
-
-            if (current_state, input_symbol) not in self.transition_function:
-                print("FAILED - Does not terminate")
-                return False
-
-            current_state = self.transition_function[(current_state, input_symbol)]
-
-            if current_state in self.final_states:
-                print("ACCEPTED")
-                return True
-
-
-        print("FAILED - Ended in a non-final state")
-        return False
+        print("Not implemented")
+        pass
 
 if __name__ == "__main__":
-    states = {"A", "B", "C", "D", "E", "F", "G"}
+    states = {"A", "B", "C", "D"}
     input_symbols = {"0", "1"}
     transition_function = {
-        ("A", "0"): "A",
-        ("A", "1"): "B",
-        ("B", "0"): "C",
-        ("B", "1"): "D",
-        ("C", "1"): "E",
-        ("D", "0"): "E",
-        ("E", "0"): "F",
-        ("F", "1"): "G",
+        ("A", "0"): {"A", "B"},
+        ("A", "1"): {"B"},
+        ("B", "0"): {"C"},
+        ("B", "1"): {"A", "C"},
+        ("C", "1"): {"D"},
     }
     starting_state = "A"
-    final_states = {"G"}
+    final_states = {"D"}
 
     # The string the dfa will process.
     test_input_string = "0000011001"
 
-    dfa = Dfa(states, input_symbols, transition_function, starting_state, final_states)
+    nfa = Nfa(states, input_symbols, transition_function, starting_state, final_states)
 
-    dfa.is_string_accepted(test_input_string)
-    dfa.plot()
+    nfa.plot()

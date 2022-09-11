@@ -20,6 +20,10 @@ def plot_automaton(transition_function, starting_state, final_states):
     for key, next_state in transition_function.items():
         current_state, input_symbol = key
         
-        g.edge(current_state, next_state, label=input_symbol)
+        if isinstance(next_state, str):
+            g.edge(current_state, next_state, label=input_symbol)
+        elif isinstance(next_state, set):
+            for elt in next_state:
+                g.edge(current_state, elt, label=input_symbol)
 
     g.view()
