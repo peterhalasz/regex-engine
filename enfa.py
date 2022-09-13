@@ -1,7 +1,7 @@
 from plotter import plot_automaton
 from utils import validate_automaton, validate_symbols
 
-""" Epsilon non-deterministic Finite Automaton.
+""" Epsilon Non-deterministic Finite Automaton.
 
 A simple implementation of an e-nfa.
 """
@@ -35,8 +35,11 @@ class ENfa():
         plot_automaton(self.transition_function, self.starting_state, self.final_states)
 
     def is_string_accepted(self, input_string):
+        if not validate_symbols(self.input_symbols, input_string):
+            print("Input string is not part of the input symbols")
+            return False
         print("Not implemented")
-        pass
+        return False
 
 if __name__ == "__main__":
     states = {"A", "B", "C", "D"}
