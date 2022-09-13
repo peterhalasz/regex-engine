@@ -1,1 +1,2 @@
 graphviz==0.20.1
+tabulate==0.8.10

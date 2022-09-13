@@ -1,3 +1,4 @@
+from tabulate import tabulate
 from plotter import plot_automaton
 from utils import validate_automaton, validate_symbols
 
@@ -37,19 +38,21 @@ class Nfa():
     def convert_to_dfa(self):
         dfa_input_symbols = self.input_symbols
         dfa_starting_state = {self.starting_state}
+        dfa_accepting_states = set()
 
         # A dict of a tuple of a set of states and an input symbol to a set of states
         dfa_transition_function = {}
 
-        state_queue = []
+        reachable_states = []
         for key, next_states in self.transition_function.items():
             current_state, input_symbol = key
-            dfa_transition_function[(current_state, input_symbol)] = next_states
+            dfa_transition_function[(frozenset(current_state), input_symbol)] = next_states
             
-            state_queue.append(next_states)
+            reachable_states.append(next_states)
         
-        for next_states in state_queue:
+        for next_states in reachable_states:
             for input_symbol in self.input_symbols:
+
                 combined_next_states = set()
                 for state in next_states:
                     if (state, input_symbol) in self.transition_function:
@@ -57,17 +60,38 @@ class Nfa():
                         for x in n:
                             combined_next_states.add(x)
 
-                multi_state_key = ",".join(next_states)
                 if combined_next_states:
-                    dfa_transition_function[(multi_state_key, input_symbol)] = combined_next_states
+                    dfa_transition_function[(frozenset(next_states), input_symbol)] = combined_next_states
 
-                if combined_next_states and combined_next_states != next_states and combined_next_states not in state_queue:
-                    print("====", combined_next_states)
-                    print("====", state_queue)
-                    state_queue.append(combined_next_states)
+                    if next_states.intersection(self.final_states):
+                        dfa_accepting_states.add(frozenset(next_states))
 
-        for k, v in dfa_transition_function.items():
-            print(k, "\t-->\t", v)
+                    if combined_next_states != next_states and combined_next_states not in reachable_states:
+                        reachable_states.append(combined_next_states)
+
+
+        # Printing the dfa as a table
+        # NOTE: the amount of sorting happening here is a crime and should be seriously punished
+        dfa_states = set()
+        for dfa_state, _ in dfa_transition_function:
+            dfa_states.add(dfa_state)
+
+        table = []
+        for dfa_state in dfa_states:
+            table_row = ["", sorted(list(dfa_state))]
+            for input_symbol in sorted(self.input_symbols):
+                if (dfa_state, input_symbol) in dfa_transition_function:
+                    if len(dfa_state) == 1 and self.starting_state in dfa_state:
+                        table_row[0] = "->"
+
+                    if set(dfa_state) in dfa_accepting_states:
+                        table_row[0] = "*"
+
+                    table_row.append(sorted(dfa_transition_function[(dfa_state, input_symbol)]))
+            table.append(table_row)
+
+        headers = ['State', *[i for i in sorted(self.input_symbols)]]
+        print(tabulate(sorted(table), headers=headers))
 
     def is_string_accepted(self, input_string):
         if not validate_symbols(self.input_symbols, input_string):
