@@ -3,3 +3,4 @@ __pycache__/
 *.gv.pdf
 *.gv.png
 out/
+*.pyc

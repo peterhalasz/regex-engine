@@ -41,7 +41,6 @@ class Dfa():
 
         current_state = self.starting_state
         for input_symbol in input_string:
-            print(current_state, " ==> " , input_symbol)
 
             if (current_state, input_symbol) not in self.transition_function:
                 print("FAILED - Does not terminate")
@@ -49,13 +48,12 @@ class Dfa():
 
             current_state = self.transition_function[(current_state, input_symbol)]
 
-            if current_state in self.final_states:
-                print("ACCEPTED")
-                return True
-
-
-        print("FAILED - Ended in a non-final state")
-        return False
+        if current_state in self.final_states:
+            print("ACCEPTED")
+            return True
+        else:
+            print("FAILED - Ended in a non-final state")
+            return False
 
 if __name__ == "__main__":
     states = {"A", "B", "C", "D", "E", "F", "G"}
