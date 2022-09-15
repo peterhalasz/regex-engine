@@ -70,9 +70,6 @@ class Nfa():
                 if combined_next_states:
                     dfa_transition_function[(frozenset(next_states), input_symbol)] = combined_next_states
 
-                    if next_states.intersection(self.final_states):
-                        dfa_accepting_states.add(frozenset(next_states))
-
                     if combined_next_states != next_states and combined_next_states not in reachable_states:
                         reachable_states.append(combined_next_states)
 
@@ -95,6 +92,11 @@ class Nfa():
         for entry in entries_to_delete:
             if entry in dfa_transition_function:
                 del dfa_transition_function[entry]
+
+        # Creating the dfa's accepting states
+        for state, _ in dfa_transition_function:
+            if state.intersection(self.final_states):
+                dfa_accepting_states.add(frozenset(state))
 
         # Create the dfa
         dfa_transition_function_2 = {}
@@ -149,18 +151,16 @@ if __name__ == "__main__":
     states = {"A", "B", "C"}
     input_symbols = {"0", "1"}
     transition_function = {
-        ("A", "0"): {"A", "B"},
-        ("A", "1"): {"A"},
-        ("B", "1"): {"C"},
+        ("A", "0"): {"A"},
+        ("A", "1"): {"B"},
+        ("B", "0"): {"B", "C"},
+        ("B", "1"): {"B"},
+        ("C", "0"): {"C"},
+        ("C", "1"): {"B", "C"},
     }
     starting_state = "A"
     final_states = {"C"}
 
-    # The string the dfa will process.
-    test_input_string = "0000011001"
-
     nfa = Nfa(states, input_symbols, transition_function, starting_state, final_states)
-
-    #nfa.plot()
     dfa = nfa.convert_to_dfa()
     dfa.plot()
