@@ -28,3 +28,31 @@ class NfaTest(unittest.TestCase):
         }
 
         self.assertDictEqual(dfa.transition_function, expected_dfa_tranisition_function)
+
+    def test_convert_to_dfa_2(self):
+        states = {"A", "B", "C"}
+        input_symbols = {"0", "1"}
+        transition_function = {
+            ("A", "0"): {"A"},
+            ("A", "1"): {"B"},
+            ("B", "0"): {"B", "C"},
+            ("B", "1"): {"B"},
+            ("C", "0"): {"C"},
+            ("C", "1"): {"B", "C"},
+        }
+        starting_state = "A"
+        final_states = {"C"}
+
+        nfa = Nfa(states, input_symbols, transition_function, starting_state, final_states)
+        dfa = nfa.convert_to_dfa()
+
+        expected_dfa_tranisition_function = {
+            ('A', '0'): 'A',
+            ('A', '1'): 'B',
+            ('B', '1'): 'B',
+            ('B', '0'): 'B,C',
+            ('B,C', '0'): 'B,C',
+            ('B,C', '1'): 'B,C',
+        }
+
+        self.assertDictEqual(dfa.transition_function, expected_dfa_tranisition_function)

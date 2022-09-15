@@ -76,16 +76,25 @@ class Nfa():
                     if combined_next_states != next_states and combined_next_states not in reachable_states:
                         reachable_states.append(combined_next_states)
 
-        # Delete entires that are unreachable
+        # Delete entires that are not reaching a state and unreachable states
         entries_to_delete = []
-        for state, _ in dfa_transition_function:
+        for key, next_states in dfa_transition_function.items():
+            state, input_symbol = key
+
             if state not in dfa_transition_function.values():
                 for symbol in self.input_symbols:
                     if (state, symbol) in dfa_transition_function:
                         entries_to_delete.append((state, symbol))
 
+            all_end_states_from_other_states = [v if k[0] != state else None for k,v in dfa_transition_function.items()]
+            if state not in all_end_states_from_other_states and ",".join(state) != self.starting_state:
+                for symbol in self.input_symbols:
+                    if (state, symbol) in dfa_transition_function:
+                        entries_to_delete.append((state, symbol))
+
         for entry in entries_to_delete:
-            del dfa_transition_function[entry]
+            if entry in dfa_transition_function:
+                del dfa_transition_function[entry]
 
         # Create the dfa
         dfa_transition_function_2 = {}
