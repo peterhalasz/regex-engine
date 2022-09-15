@@ -70,6 +70,16 @@ class Nfa():
                     if combined_next_states != next_states and combined_next_states not in reachable_states:
                         reachable_states.append(combined_next_states)
 
+        entries_to_delete = []
+        for state, _ in dfa_transition_function:
+            if state not in dfa_transition_function.values():
+                for symbol in self.input_symbols:
+                    if (state, symbol) in dfa_transition_function:
+                        entries_to_delete.append((state, symbol))
+
+
+        for entry in entries_to_delete:
+            del dfa_transition_function[entry]
 
         # Printing the dfa as a table
         # NOTE: the amount of sorting happening here is a crime and should be seriously punished
@@ -92,13 +102,15 @@ class Nfa():
             table.append(table_row)
 
         headers = ['State', *[i for i in sorted(self.input_symbols)]]
-        print(tabulate(sorted(table), headers=headers))
 
+
+
+        print(tabulate(sorted(table), headers=headers))
 
         dfa_transition_function_2 = {}
         for key, next_states in dfa_transition_function.items():
             dfa_state, input_symbol = key
-            dfa_transition_function_2[",".join(dfa_state), input_symbol] = next_states
+            dfa_transition_function_2[",".join(dfa_state), input_symbol] = ",".join(next_states)
 
         dfa_accepting_states_2 = [",".join(s) for s in dfa_accepting_states]
 
@@ -120,17 +132,15 @@ class Nfa():
         return False
 
 if __name__ == "__main__":
-    states = {"A", "B", "C", "D"}
+    states = {"A", "B", "C"}
     input_symbols = {"0", "1"}
     transition_function = {
         ("A", "0"): {"A", "B"},
-        ("A", "1"): {"B"},
-        ("B", "0"): {"C"},
-        ("B", "1"): {"A", "C"},
-        ("C", "1"): {"D"},
+        ("A", "1"): {"A"},
+        ("B", "1"): {"C"},
     }
     starting_state = "A"
-    final_states = {"D"}
+    final_states = {"C"}
 
     # The string the dfa will process.
     test_input_string = "0000011001"
