@@ -37,13 +37,13 @@ class Nfa():
         plot_automaton(self.transition_function, self.starting_state, self.final_states)
 
     def convert_to_dfa(self):
-        dfa_input_symbols = self.input_symbols
-        dfa_starting_state = {self.starting_state}
         dfa_accepting_states = set()
 
         # A dict of a tuple of a set of states and an input symbol to a set of states
         dfa_transition_function = {}
 
+        # Add the nfa transitions to the dfa's transition function
+        # Create a list states that are reachable
         reachable_states = []
         for key, next_states in self.transition_function.items():
             current_state, input_symbol = key
@@ -51,15 +51,21 @@ class Nfa():
             
             reachable_states.append(next_states)
         
+        # Constructing the nfa transition function lazily
         for next_states in reachable_states:
             for input_symbol in self.input_symbols:
 
                 combined_next_states = set()
+
+                # Iterate over all states of the nfa
+                # Collect all nfa reachable states from that state
+                # This nfa state can include multiple dfa states
                 for state in next_states:
                     if (state, input_symbol) in self.transition_function:
-                        n = self.transition_function[(state, input_symbol)]
-                        for x in n:
-                            combined_next_states.add(x)
+                        nfa_next_states = self.transition_function[(state, input_symbol)]
+                        for nfa_next_state in nfa_next_states:
+                            combined_next_states.add(nfa_next_state)
+
 
                 if combined_next_states:
                     dfa_transition_function[(frozenset(next_states), input_symbol)] = combined_next_states
@@ -70,6 +76,7 @@ class Nfa():
                     if combined_next_states != next_states and combined_next_states not in reachable_states:
                         reachable_states.append(combined_next_states)
 
+        # Delete entires that are unreachable
         entries_to_delete = []
         for state, _ in dfa_transition_function:
             if state not in dfa_transition_function.values():
@@ -77,11 +84,35 @@ class Nfa():
                     if (state, symbol) in dfa_transition_function:
                         entries_to_delete.append((state, symbol))
 
-
         for entry in entries_to_delete:
             del dfa_transition_function[entry]
 
-        # Printing the dfa as a table
+        # Create the dfa
+        dfa_transition_function_2 = {}
+        for key, next_states in dfa_transition_function.items():
+            dfa_state, input_symbol = key
+            dfa_transition_function_2[",".join(sorted(dfa_state)), input_symbol] = ",".join(sorted(next_states))
+
+        dfa_accepting_states_2 = [",".join(s) for s in dfa_accepting_states]
+
+        dfa = Dfa(
+            states=self.states,
+            input_symbols=self.input_symbols,
+            transition_function=dfa_transition_function_2,
+            starting_state=self.starting_state,
+            final_states=dfa_accepting_states_2,
+        )
+
+        return dfa
+
+    def is_string_accepted(self, input_string):
+        if not validate_symbols(self.input_symbols, input_string):
+            print("Input string is not part of the input symbols")
+            return False
+        print("Not implemented")
+        return False
+
+    def print_as_dfa(self, dfa_transition_function, dfa_accepting_states):
         # NOTE: the amount of sorting happening here is a crime and should be seriously punished
         dfa_states = set()
         for dfa_state, _ in dfa_transition_function:
@@ -103,33 +134,7 @@ class Nfa():
 
         headers = ['State', *[i for i in sorted(self.input_symbols)]]
 
-
-
         print(tabulate(sorted(table), headers=headers))
-
-        dfa_transition_function_2 = {}
-        for key, next_states in dfa_transition_function.items():
-            dfa_state, input_symbol = key
-            dfa_transition_function_2[",".join(dfa_state), input_symbol] = ",".join(next_states)
-
-        dfa_accepting_states_2 = [",".join(s) for s in dfa_accepting_states]
-
-        dfa = Dfa(
-            states=self.states,
-            input_symbols=self.input_symbols,
-            transition_function=dfa_transition_function_2,
-            starting_state=self.starting_state,
-            final_states=dfa_accepting_states_2,
-        )
-
-        return dfa
-
-    def is_string_accepted(self, input_string):
-        if not validate_symbols(self.input_symbols, input_string):
-            print("Input string is not part of the input symbols")
-            return False
-        print("Not implemented")
-        return False
 
 if __name__ == "__main__":
     states = {"A", "B", "C"}
