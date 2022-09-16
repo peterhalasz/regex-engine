@@ -96,7 +96,7 @@ class Nfa():
         # Creating the dfa's accepting states
         for state, _ in dfa_transition_function:
             if state.intersection(self.final_states):
-                dfa_accepting_states.add(frozenset(state))
+                dfa_accepting_states.add(state)
 
         # Create the dfa
         dfa_transition_function_2 = {}
@@ -104,7 +104,8 @@ class Nfa():
             dfa_state, input_symbol = key
             dfa_transition_function_2[",".join(sorted(dfa_state)), input_symbol] = ",".join(sorted(next_states))
 
-        dfa_accepting_states_2 = [",".join(s) for s in dfa_accepting_states]
+        
+        dfa_accepting_states_2 = [",".join(sorted(s)) for s in dfa_accepting_states]
 
         dfa = Dfa(
             states=self.states,
@@ -123,29 +124,6 @@ class Nfa():
         print("Not implemented")
         return False
 
-    def print_as_dfa(self, dfa_transition_function, dfa_accepting_states):
-        # NOTE: the amount of sorting happening here is a crime and should be seriously punished
-        dfa_states = set()
-        for dfa_state, _ in dfa_transition_function:
-            dfa_states.add(dfa_state)
-
-        table = []
-        for dfa_state in dfa_states:
-            table_row = ["", sorted(list(dfa_state))]
-            for input_symbol in sorted(self.input_symbols):
-                if (dfa_state, input_symbol) in dfa_transition_function:
-                    if len(dfa_state) == 1 and self.starting_state in dfa_state:
-                        table_row[0] = "->"
-
-                    if set(dfa_state) in dfa_accepting_states:
-                        table_row[0] = "*"
-
-                    table_row.append(sorted(dfa_transition_function[(dfa_state, input_symbol)]))
-            table.append(table_row)
-
-        headers = ['State', *[i for i in sorted(self.input_symbols)]]
-
-        print(tabulate(sorted(table), headers=headers))
 
 if __name__ == "__main__":
     states = {"A", "B", "C"}
@@ -163,4 +141,4 @@ if __name__ == "__main__":
 
     nfa = Nfa(states, input_symbols, transition_function, starting_state, final_states)
     dfa = nfa.convert_to_dfa()
-    dfa.plot()
+    dfa.print()

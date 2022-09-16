@@ -1,5 +1,6 @@
 from plotter import plot_automaton
 from utils import validate_automaton, validate_symbols
+from tabulate import tabulate
 
 """ Deterministic Finite Automaton.
 
@@ -33,6 +34,34 @@ class Dfa():
 
     def plot(self):
         plot_automaton(self.transition_function, self.starting_state, self.final_states)
+
+    def print(self):
+        # NOTE: the amount of sorting happening here is a crime and should be seriously punished
+        dfa_states = set()
+        for dfa_state, _ in self.transition_function:
+            dfa_states.add(dfa_state)
+        
+        table = []
+        sorted_input_symbols = sorted(self.input_symbols)
+        for dfa_state in dfa_states:
+            table_row = ["", dfa_state]
+
+            for input_symbol in sorted_input_symbols:
+                if (dfa_state, input_symbol) in self.transition_function:
+                    if len(dfa_state) == 1 and self.starting_state in dfa_state:
+                        table_row[0] = "->"
+
+                    print(self.final_states, dfa_state)
+
+                    if dfa_state in self.final_states:
+                        table_row[0] = "*"
+
+                    table_row.append(self.transition_function[(dfa_state, input_symbol)])
+            table.append(table_row)
+
+        headers = ['State', *[i for i in sorted_input_symbols]]
+
+        print(tabulate(table, headers=headers))
 
     def is_string_accepted(self, input_string):
         if not validate_symbols(self.input_symbols, input_string):
