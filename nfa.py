@@ -37,8 +37,6 @@ class Nfa():
         plot_automaton(self.transition_function, self.starting_state, self.final_states)
 
     def convert_to_dfa(self):
-        dfa_accepting_states = set()
-
         # A dict of a tuple of a set of states and an input symbol to a set of states
         dfa_transition_function = {}
 
@@ -50,7 +48,7 @@ class Nfa():
             dfa_transition_function[(frozenset(current_state), input_symbol)] = next_states
             
             reachable_states.append(next_states)
-        
+
         # Constructing the nfa transition function lazily
         for next_states in reachable_states:
             for input_symbol in self.input_symbols:
@@ -93,6 +91,8 @@ class Nfa():
             if entry in dfa_transition_function:
                 del dfa_transition_function[entry]
 
+        dfa_accepting_states = set()
+
         # Creating the dfa's accepting states
         for state, _ in dfa_transition_function:
             if state.intersection(self.final_states):
@@ -126,18 +126,14 @@ class Nfa():
 
 
 if __name__ == "__main__":
-    states = {"A", "B", "C"}
+    states = {"A", "B"}
     input_symbols = {"0", "1"}
     transition_function = {
-        ("A", "0"): {"A"},
-        ("A", "1"): {"B"},
-        ("B", "0"): {"B", "C"},
-        ("B", "1"): {"B"},
-        ("C", "0"): {"C"},
-        ("C", "1"): {"B", "C"},
+        ("A", "0"): {"A", "B"},
+        ("A", "1"): {"A", "B"},
     }
     starting_state = "A"
-    final_states = {"C"}
+    final_states = {"B"}
 
     nfa = Nfa(states, input_symbols, transition_function, starting_state, final_states)
     dfa = nfa.convert_to_dfa()
