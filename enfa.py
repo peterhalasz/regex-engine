@@ -1,3 +1,4 @@
+from nfa import Nfa
 from plotter import plot_automaton
 from utils import validate_automaton, validate_symbols
 
@@ -82,24 +83,27 @@ class ENfa():
 
             else:
                 if (state, symbol) in nfa_transition_function.keys():
-                    print("ADS")
                     old = nfa_transition_function[(state, symbol)]
                     nfa_transition_function[(state, symbol)] = old.union(nfa_transition_function[(state, symbol)])
                 else:
                     nfa_transition_function[(state, symbol)] = self.transition_function[(state, symbol)]
                 
 
-            
-        for k, v in nfa_transition_function.items():
-            print(k, v)
-
-        print("====")
-
-
-
         # Step 3 - If v1 is a starting state v2 is also a starting state
 
         # Step 4 - If v2 is a final state, v1 is also a final state
+
+        nfa = Nfa(
+            None,
+            None,
+            nfa_transition_function,
+            None,
+            None,
+        )
+
+        return nfa
+
+
 
 if __name__ == "__main__":
     states = {"A", "B", "C", "D", "E"}

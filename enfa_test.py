@@ -20,16 +20,16 @@ class ENfaTest(unittest.TestCase):
 
         e_nfa = ENfa(states, input_symbols, transition_function, starting_state, final_states)
 
-        e_nfa.convert_to_nfa()
+        nfa = e_nfa.convert_to_nfa()
 
         expected_nfa_tranisition_function = {
-            ('A', '0'): 'D',
-            ('A', '1'): 'B,E',
-            ('B', '1'): 'A',
-            ('C', '0'): 'D',
-            ('C', '1'): 'E',
-            ('D', '0'): 'C',
-            ('E', '0'): 'C',
+            ('A', '0'): {'D'},
+            ('A', '1'): {'B', 'E'},
+            ('B', '1'): {'A'},
+            ('C', '0'): {'D'},
+            ('C', '1'): {'E'},
+            ('D', '0'): {'C'},
+            ('E', '0'): {'C'},
         }
 
-        self.assertDictEqual(e_nfa.transition_function, expected_nfa_tranisition_function)
+        self.assertDictEqual(nfa.transition_function, expected_nfa_tranisition_function)
