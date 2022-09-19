@@ -5,6 +5,9 @@ from utils import validate_automaton, validate_symbols
 
 A simple implementation of an e-nfa.
 """
+
+EPS = "ε"
+
 class ENfa():
     def __init__(self, states, input_symbols, transition_function, starting_state, final_states):
         # A finite set of states. Usually denoted by Q.
@@ -41,22 +44,83 @@ class ENfa():
         print("Not implemented")
         return False
 
+    def convert_to_nfa(self):
+        for k, v in self.transition_function.items():
+            print(k, v)
+
+        eps_transitions = {}
+        # Step 1 - Find eps transitions (v1 - v2)
+        for state, symbol in self.transition_function:
+            if symbol == EPS:
+                eps_transitions[(state, symbol)] = self.transition_function[(state, symbol)]
+
+
+        print("====")
+        for k, v in eps_transitions.items():
+            print(k, v)
+
+        print("====")
+
+        # Step 2
+        # Find all moves that start from the end state (v2) of the eps transition
+        # Duplicate those with the same input (v1 - v2) and the end state from the v2-n
+        # transition.
+        # Remove the eps transitions.
+        nfa_transition_function = {}
+
+        for state, symbol in self.transition_function:
+            if (state, symbol) in eps_transitions:
+                end_states = eps_transitions[(state, symbol)]
+
+                transitions_from_eps_end_state = {k:v for k,v in self.transition_function.items() if k[0] in end_states}
+
+                for k, v in transitions_from_eps_end_state.items():
+                    if (state, k[1]) in nfa_transition_function.keys():
+                        nfa_transition_function[(state, k[1])] = v.union(nfa_transition_function[(state, k[1])])
+                    else:
+                        nfa_transition_function[(state, k[1])] = v
+
+            else:
+                if (state, symbol) in nfa_transition_function.keys():
+                    print("ADS")
+                    old = nfa_transition_function[(state, symbol)]
+                    nfa_transition_function[(state, symbol)] = old.union(nfa_transition_function[(state, symbol)])
+                else:
+                    nfa_transition_function[(state, symbol)] = self.transition_function[(state, symbol)]
+                
+
+            
+        for k, v in nfa_transition_function.items():
+            print(k, v)
+
+        print("====")
+
+
+
+        # Step 3 - If v1 is a starting state v2 is also a starting state
+
+        # Step 4 - If v2 is a final state, v1 is also a final state
+
 if __name__ == "__main__":
-    states = {"A", "B", "C", "D"}
-    input_symbols = {"0", "1", "ε"}
+    states = {"A", "B", "C", "D", "E"}
+    input_symbols = {"0", "1", EPS}
     transition_function = {
-        ("A", "0"): {"A", "B"},
         ("A", "1"): {"B"},
-        ("B", "0"): {"C"},
-        ("B", "1"): {"A", "C"},
-        ("C", "ε"): {"D"},
+        ("B", "1"): {"A"},
+        ("A", EPS): {"C"},
+        ("C", "0"): {"D"},
+        ("D", "0"): {"C"},
+        ("C", "1"): {"E"},
+        ("E", "0"): {"C"},
     }
     starting_state = "A"
-    final_states = {"D"}
+    final_states = {"C"}
 
-    # The string the dfa will process.
+    # The string the e-nfa will process.
     test_input_string = "0000011001"
 
     e_nfa = ENfa(states, input_symbols, transition_function, starting_state, final_states)
 
-    e_nfa.plot()
+    e_nfa.convert_to_nfa()
+
+    #e_nfa.plot()
