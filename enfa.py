@@ -46,21 +46,14 @@ class ENfa():
         return False
 
     def convert_to_nfa(self):
-        for k, v in self.transition_function.items():
-            print(k, v)
+        nfa_starting_states = {self.starting_state}
+        nfa_final_states = self.final_states
 
         eps_transitions = {}
         # Step 1 - Find eps transitions (v1 - v2)
         for state, symbol in self.transition_function:
             if symbol == EPS:
                 eps_transitions[(state, symbol)] = self.transition_function[(state, symbol)]
-
-
-        print("====")
-        for k, v in eps_transitions.items():
-            print(k, v)
-
-        print("====")
 
         # Step 2
         # Find all moves that start from the end state (v2) of the eps transition
@@ -81,29 +74,28 @@ class ENfa():
                     else:
                         nfa_transition_function[(state, k[1])] = v
 
+                    # Step 3 - If v1 is a starting state v2 is also a starting state
+                    if state in self.starting_state:
+                        nfa_starting_states = nfa_starting_states.union({k[0]})
+                    # Step 4 - If v2 is a final state, v1 is also a final state
+                    if k[0] in self.final_states:
+                        nfa_final_states = nfa_final_states.union({state})
             else:
                 if (state, symbol) in nfa_transition_function.keys():
                     old = nfa_transition_function[(state, symbol)]
                     nfa_transition_function[(state, symbol)] = old.union(nfa_transition_function[(state, symbol)])
                 else:
                     nfa_transition_function[(state, symbol)] = self.transition_function[(state, symbol)]
-                
-
-        # Step 3 - If v1 is a starting state v2 is also a starting state
-
-        # Step 4 - If v2 is a final state, v1 is also a final state
 
         nfa = Nfa(
-            None,
-            None,
+            self.states,
+            self.input_symbols,
             nfa_transition_function,
-            None,
-            None,
+            nfa_starting_states,
+            nfa_final_states,
         )
 
         return nfa
-
-
 
 if __name__ == "__main__":
     states = {"A", "B", "C", "D", "E"}
@@ -125,6 +117,4 @@ if __name__ == "__main__":
 
     e_nfa = ENfa(states, input_symbols, transition_function, starting_state, final_states)
 
-    e_nfa.convert_to_nfa()
-
-    #e_nfa.plot()
+    nfa = e_nfa.convert_to_nfa()

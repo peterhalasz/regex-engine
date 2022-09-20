@@ -15,7 +15,11 @@ def plot_automaton(transition_function, starting_state, final_states):
     g.node(START_NODE)
 
     g.attr('node', shape='circle', style='solid')
-    g.edge(START_NODE, starting_state)
+    if isinstance(starting_state, str):
+        g.edge(START_NODE, starting_state)
+    elif isinstance(starting_state, set):
+        for state in starting_state:
+            g.edge(START_NODE, state)
 
     for key, next_state in transition_function.items():
         current_state, input_symbol = key
