@@ -1,3 +1,4 @@
+import printer
 from nfa import Nfa
 from plotter import plot_automaton
 from utils import validate_automaton, validate_symbols
@@ -118,3 +119,6 @@ if __name__ == "__main__":
     e_nfa = ENfa(states, input_symbols, transition_function, starting_state, final_states)
 
     nfa = e_nfa.convert_to_nfa()
+
+    printer.print_automaton(e_nfa.transition_function, e_nfa.starting_state, e_nfa.final_states, e_nfa.input_symbols)
+
