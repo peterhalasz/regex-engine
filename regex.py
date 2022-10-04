@@ -63,6 +63,7 @@ def shunting_yard(regex):
         output += operator_stack.pop()
 
     print(output)
+    return output
 
 if __name__ == "__main__":
     regex = "(0+1)*0"
