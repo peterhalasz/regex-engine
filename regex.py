@@ -105,6 +105,32 @@ def _handle_symbol(symbol):
 
     return enfa
 
+def _handle_union(enfa1, enfa2):
+    starting_state = NODE_GEN.__next__
+    final_state = NODE_GEN.__next__
+    
+    enfa = ENfa(
+        (starting_state, final_state),
+        ("0", "1"),
+        {
+            (starting_state, EPS): {enfa1.starting_state},
+            (starting_state, EPS): {enfa2.starting_state},
+            # TODO: How to handle multiple end states
+            (enfa1.final_states[0], EPS): {final_state},
+            (enfa2.final_states[0], EPS): {final_state},
+        },
+        starting_state,
+        final_state
+    )
+
+    for k, v in enfa1.items():
+        enfa.transition_function[k] = v
+
+    for k, v in enfa2.items():
+        enfa.transition_function[k] = v
+
+    return enfa
+
 def thomsons_construction(regex):
     gen = node_name_generator()
     pass
