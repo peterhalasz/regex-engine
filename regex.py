@@ -158,6 +158,28 @@ def _handle_concatenation(enfa1, enfa2):
 
     return enfa
 
+def _handle_kleene_star(enfa1):
+    starting_state = NODE_GEN.__next__
+    final_state = NODE_GEN.__next__
+    
+    enfa = ENfa(
+        (starting_state, final_state),
+        ("0", "1"),
+        {
+            (starting_state, EPS): {final_state},
+            (starting_state, EPS): {enfa1.starting_state},
+            (enfa1.final_states[0], EPS): {final_state},
+            (enfa1.starting_state, EPS): {enfa1.final_states[0]},
+        },
+        starting_state,
+        final_state
+    )
+
+    for k, v in enfa1.items():
+        enfa.transition_function[k] = v
+
+    return enfa
+
 def thomsons_construction(regex):
     gen = node_name_generator()
     pass
