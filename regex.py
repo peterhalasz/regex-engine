@@ -1,9 +1,18 @@
+from enfa import ENfa, EPS
+
 KLEENEE = ("*", 2)
 CONCATENATION = (".", 1)
 UNION = ("+", 0)
 
 ALPHABET = {"0", "1"}
 OPERATORS = {KLEENEE[0], CONCATENATION[0], UNION[0]}
+
+def node_name_generator():
+    for i in range(ord('a'),ord('z')+1):
+        for j in range(ord('a'),ord('z')+1):
+            yield chr(i)+chr(j)
+
+NODE_GEN = node_name_generator()
 
 def _get_operator(operator):
     if operator == "*":
@@ -64,8 +73,30 @@ def shunting_yard(regex):
 
     return output
 
+def _handle_empty_expression():
+    starting_state = NODE_GEN.__next__
+    final_state = NODE_GEN.__next__
+
+    enfa = ENfa(
+        (starting_state, final_state),
+        ("0", "1"),
+        {
+            (starting_state, EPS): {final_state},
+        },
+        starting_state,
+        final_state
+    )
+
+    return enfa
+
+def thomsons_construction(regex):
+    gen = node_name_generator()
+    pass
+
 if __name__ == "__main__":
     regex = "0(0+1)*1"
     print(regex)
     output = shunting_yard(regex)
     print(output)
+
+
