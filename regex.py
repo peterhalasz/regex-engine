@@ -131,6 +131,33 @@ def _handle_union(enfa1, enfa2):
 
     return enfa
 
+def _handle_concatenation(enfa1, enfa2):
+    new_mid_state = NODE_GEN.__next__
+    
+    enfa = ENfa(
+        # TODO: Compute common states or remove field from enfa
+        (),
+        ("0", "1"),
+        {},
+        enfa1.starting_state,
+        enfa2.final_states[0]
+    )
+
+    for k, v in enfa1.items():
+        enfa.transition_function[k] = v
+
+    for k, v in enfa2.items():
+        enfa.transition_function[k] = v
+
+    for k, v in enfa.transition_function.items():
+        if v == enfa1.final_states[0]:
+            enfa.transition_function[k] = {new_mid_state}
+        if k[0] == enfa2.starting_state:
+            enfa.transition_function[(new_mid_state, k[1])] = v
+            del enfa.transition_function[k]
+
+    return enfa
+
 def thomsons_construction(regex):
     gen = node_name_generator()
     pass
