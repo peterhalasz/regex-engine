@@ -89,6 +89,22 @@ def _handle_empty_expression():
 
     return enfa
 
+def _handle_symbol(symbol):
+    starting_state = NODE_GEN.__next__
+    final_state = NODE_GEN.__next__
+
+    enfa = ENfa(
+        (starting_state, final_state),
+        ("0", "1"),
+        {
+            (starting_state, symbol): {final_state},
+        },
+        starting_state,
+        final_state
+    )
+
+    return enfa
+
 def thomsons_construction(regex):
     gen = node_name_generator()
     pass
