@@ -21,8 +21,10 @@ def _add_explicit_concatenation_symbols(regex):
 
     prev = ""
     for c in regex:
-        if c in ALPHABET and (prev in ALPHABET or prev == ')' or prev == '*'):
+        if (c in ALPHABET and (prev in ALPHABET or prev == ')' or prev == '*')) or (c == '(' and
+                prev in ALPHABET):
             new_regex += "."
+
         new_regex += c
         prev = c
 
@@ -30,8 +32,6 @@ def _add_explicit_concatenation_symbols(regex):
 
 def shunting_yard(regex):
     regex = _add_explicit_concatenation_symbols(regex)
-
-    print(regex)
 
     output = ""
     operator_stack = []
@@ -62,9 +62,10 @@ def shunting_yard(regex):
     while operator_stack:
         output += operator_stack.pop()
 
-    print(output)
     return output
 
 if __name__ == "__main__":
-    regex = "(0+1)*0"
-    shunting_yard(regex)
+    regex = "0(0+1)*1"
+    print(regex)
+    output = shunting_yard(regex)
+    print(output)
