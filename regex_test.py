@@ -103,11 +103,11 @@ class RegexTest(unittest.TestCase):
 
         self.assertEqual(len(enfa.transition_function), 9)
         self.assertEqual(enfa.transition_function[('aa', '0')], {'ak'})
-        self.assertEqual(enfa.transition_function[('ah', 'ε')], {'ag', 'aj'})
+        self.assertEqual(enfa.transition_function[('ah', 'ε')], {'ag', 'an'})
         self.assertEqual(enfa.transition_function[('ag', 'ε')], {'ae', 'ac'})
         self.assertEqual(enfa.transition_function[('ad', 'ε')], {'ah'})
         self.assertEqual(enfa.transition_function[('af', 'ε')], {'ah'})
         self.assertEqual(enfa.transition_function[('ac', '0')], {'ad'})
         self.assertEqual(enfa.transition_function[('ae', '1')], {'af'})
-        self.assertEqual(enfa.transition_function[('ak', 'ε')], {'ag', 'aj'})
+        self.assertEqual(enfa.transition_function[('ak', 'ε')], {'ag', 'an'})
         self.assertEqual(enfa.transition_function[('an', '1')], {'am'})

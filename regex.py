@@ -146,8 +146,9 @@ def _handle_concatenation(enfa1, enfa2, node_gen):
         enfa.transition_function[k] = v
 
     for k, v in enfa.transition_function.items():
-        if v == enfa1.final_states:
-            enfa.transition_function[k] = {new_mid_state}
+        if list(enfa1.final_states)[0] in v:
+            enfa.transition_function[k] = enfa.transition_function[k] | {new_mid_state}
+            enfa.transition_function[k] = enfa.transition_function[k] - enfa1.final_states
 
     for k, v in enfa.transition_function.items():
         if k[0] == enfa2.starting_state:
@@ -218,7 +219,8 @@ if __name__ == "__main__":
     regex = shunting_yard(regex)
     print(regex)
     enfa = thomsons_construction("001+*.1.")
-    for k,v in enfa.transition_function.items():
-        print(f"self.assertEqual(enfa.transition_function[{k}], {v}")
+
+    enfa.plot()
+    nfa = enfa.convert_to_nfa()
 
 
