@@ -74,14 +74,14 @@ def shunting_yard(regex):
     return output
 
 def _handle_empty_expression():
-    starting_state = NODE_GEN.__next__
-    final_state = NODE_GEN.__next__
+    starting_state = NODE_GEN.__next__()
+    final_state = NODE_GEN.__next__()
 
     enfa = ENfa(
         (starting_state, final_state),
         ("0", "1"),
         {
-            (starting_state, EPS): {final_state},
+            (starting_state, EPS): final_state,
         },
         starting_state,
         final_state
@@ -90,8 +90,8 @@ def _handle_empty_expression():
     return enfa
 
 def _handle_symbol(symbol):
-    starting_state = NODE_GEN.__next__
-    final_state = NODE_GEN.__next__
+    starting_state = NODE_GEN.__next__()
+    final_state = NODE_GEN.__next__()
 
     enfa = ENfa(
         (starting_state, final_state),
@@ -106,8 +106,8 @@ def _handle_symbol(symbol):
     return enfa
 
 def _handle_union(enfa1, enfa2):
-    starting_state = NODE_GEN.__next__
-    final_state = NODE_GEN.__next__
+    starting_state = NODE_GEN.__next__()
+    final_state = NODE_GEN.__next__()
     
     enfa = ENfa(
         (starting_state, final_state),
@@ -132,7 +132,7 @@ def _handle_union(enfa1, enfa2):
     return enfa
 
 def _handle_concatenation(enfa1, enfa2):
-    new_mid_state = NODE_GEN.__next__
+    new_mid_state = NODE_GEN.__next__()
     
     enfa = ENfa(
         # TODO: Compute common states or remove field from enfa
@@ -159,8 +159,8 @@ def _handle_concatenation(enfa1, enfa2):
     return enfa
 
 def _handle_kleene_star(enfa1):
-    starting_state = NODE_GEN.__next__
-    final_state = NODE_GEN.__next__
+    starting_state = NODE_GEN.__next__()
+    final_state = NODE_GEN.__next__()
     
     enfa = ENfa(
         (starting_state, final_state),
@@ -181,13 +181,15 @@ def _handle_kleene_star(enfa1):
     return enfa
 
 def thomsons_construction(regex):
-    gen = node_name_generator()
-    pass
+    if regex == '':
+        return _handle_empty_expression()
 
 if __name__ == "__main__":
     regex = "0(0+1)*1"
     print(regex)
-    output = shunting_yard(regex)
-    print(output)
+    regex = shunting_yard(regex)
+    print(regex)
+    enfa = thomsons_construction(regex)
+    print(enfa)
 
 
