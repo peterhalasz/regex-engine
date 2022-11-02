@@ -16,10 +16,10 @@ class RegexTest(unittest.TestCase):
         enfa = thomsons_construction("")
 
         self.assertEqual(enfa.starting_state, "aa")
-        self.assertEqual(enfa.final_states, "ab")
+        self.assertEqual(enfa.final_states, {"ab"})
 
         expected_transition_function = {
-                ("aa", EPS): "ab"
+                ("aa", EPS): {"ab"}
         }
 
         self.assertEqual(enfa.transition_function, expected_transition_function)
@@ -28,10 +28,22 @@ class RegexTest(unittest.TestCase):
         enfa = thomsons_construction("0")
 
         self.assertEqual(enfa.starting_state, "aa")
-        self.assertEqual(enfa.final_states, "ab")
+        self.assertEqual(enfa.final_states, {"ab"})
 
         expected_transition_function = {
-                ("aa", "0"): "ab"
+                ("aa", "0"): {"ab"}
         }
 
         self.assertEqual(enfa.transition_function, expected_transition_function)
+
+    def test_thomsons_construction_single_union_regex(self):
+        enfa = thomsons_construction("01+")
+
+        self.assertEqual(enfa.starting_state, "ae")
+        self.assertEqual(enfa.final_states, {"af"})
+
+        self.assertEqual(enfa.transition_function[("aa", "0")], {"ab"})
+        self.assertEqual(enfa.transition_function[("ac", "1")], {"ad"})
+        self.assertEqual(enfa.transition_function[("ae", EPS)], {"aa", "ac"})
+        self.assertEqual(enfa.transition_function[("ab", EPS)], {"af"})
+        self.assertEqual(enfa.transition_function[("ad", EPS)], {"af"})
