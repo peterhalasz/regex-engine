@@ -58,3 +58,14 @@ class RegexTest(unittest.TestCase):
         self.assertEqual(len(enfa.transition_function), 2)
         self.assertEqual(enfa.transition_function[("aa", "0")], {"ae"})
         self.assertEqual(enfa.transition_function[("ae", "1")], {"ad"})
+
+    def test_thomsons_construction_single_kleene_star_regex(self):
+        enfa = thomsons_construction("0*")
+
+        self.assertEqual(enfa.starting_state, "ac")
+        self.assertEqual(enfa.final_states, {"ad"})
+
+        self.assertEqual(len(enfa.transition_function), 3)
+        self.assertEqual(enfa.transition_function[("ac", EPS)], {"aa", "ad"})
+        self.assertEqual(enfa.transition_function[("aa", "0")], {"ab"})
+        self.assertEqual(enfa.transition_function[("ab", EPS)], {"aa", "ad"})

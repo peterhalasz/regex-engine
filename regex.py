@@ -158,24 +158,22 @@ def _handle_concatenation(enfa1, enfa2, node_gen):
 
     return enfa
 
-def _handle_kleene_star(enfa1):
-    starting_state = NODE_GEN.__next__()
-    final_state = NODE_GEN.__next__()
+def _handle_kleene_star(enfa1, node_gen):
+    starting_state = node_gen.__next__()
+    final_state = node_gen.__next__()
     
     enfa = ENfa(
         (starting_state, final_state),
         ("0", "1"),
         {
-            (starting_state, EPS): {final_state},
-            (starting_state, EPS): {enfa1.starting_state},
-            (enfa1.final_states[0], EPS): {final_state},
-            (enfa1.starting_state, EPS): {enfa1.final_states[0]},
+            (starting_state, EPS): {final_state, enfa1.starting_state},
+            (list(enfa1.final_states)[0], EPS): {final_state, enfa1.starting_state},
         },
         starting_state,
-        final_state
+        {final_state},
     )
 
-    for k, v in enfa1.items():
+    for k, v in enfa1.transition_function.items():
         enfa.transition_function[k] = v
 
     return enfa
@@ -200,6 +198,11 @@ def thomsons_construction(regex):
         enfa2 = _handle_symbol("1", node_gen)
 
         return _handle_concatenation(enfa1, enfa2, node_gen)
+
+    if regex == '0*':
+        enfa1 = _handle_symbol("0", node_gen)
+
+        return _handle_kleene_star(enfa1, node_gen)
 
 if __name__ == "__main__":
     regex = "0(0+1)*1"
