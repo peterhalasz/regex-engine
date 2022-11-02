@@ -127,30 +127,34 @@ def _handle_union(enfa1, enfa2, node_gen):
 
     return enfa
 
-def _handle_concatenation(enfa1, enfa2):
-    new_mid_state = NODE_GEN.__next__()
+def _handle_concatenation(enfa1, enfa2, node_gen):
+    new_mid_state = node_gen.__next__()
     
     enfa = ENfa(
-        # TODO: Compute common states or remove field from enfa
+        # TODO: Compute states or remove field from enfa
         (),
         ("0", "1"),
         {},
         enfa1.starting_state,
-        enfa2.final_states[0]
+        enfa2.final_states,
     )
 
-    for k, v in enfa1.items():
+    for k, v in enfa1.transition_function.items():
         enfa.transition_function[k] = v
 
-    for k, v in enfa2.items():
+    for k, v in enfa2.transition_function.items():
         enfa.transition_function[k] = v
 
     for k, v in enfa.transition_function.items():
-        if v == enfa1.final_states[0]:
+        if v == enfa1.final_states:
             enfa.transition_function[k] = {new_mid_state}
+            break
+
+    for k, v in enfa.transition_function.items():
         if k[0] == enfa2.starting_state:
             enfa.transition_function[(new_mid_state, k[1])] = v
             del enfa.transition_function[k]
+            break
 
     return enfa
 
@@ -191,12 +195,19 @@ def thomsons_construction(regex):
 
         return _handle_union(enfa1, enfa2, node_gen)
 
+    if regex == '01.':
+        enfa1 = _handle_symbol("0", node_gen)
+        enfa2 = _handle_symbol("1", node_gen)
+
+        return _handle_concatenation(enfa1, enfa2, node_gen)
+
 if __name__ == "__main__":
     regex = "0(0+1)*1"
     print(regex)
     regex = shunting_yard(regex)
     print(regex)
-    enfa = thomsons_construction(regex)
+    enfa = thomsons_construction("01.")
     print(enfa)
+    print(enfa.transition_function)
 
 

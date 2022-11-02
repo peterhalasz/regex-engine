@@ -42,8 +42,19 @@ class RegexTest(unittest.TestCase):
         self.assertEqual(enfa.starting_state, "ae")
         self.assertEqual(enfa.final_states, {"af"})
 
+        self.assertEqual(len(enfa.transition_function), 5)
         self.assertEqual(enfa.transition_function[("aa", "0")], {"ab"})
         self.assertEqual(enfa.transition_function[("ac", "1")], {"ad"})
         self.assertEqual(enfa.transition_function[("ae", EPS)], {"aa", "ac"})
         self.assertEqual(enfa.transition_function[("ab", EPS)], {"af"})
         self.assertEqual(enfa.transition_function[("ad", EPS)], {"af"})
+
+    def test_thomsons_construction_single_concatenation_regex(self):
+        enfa = thomsons_construction("01.")
+
+        self.assertEqual(enfa.starting_state, "aa")
+        self.assertEqual(enfa.final_states, {"ad"})
+
+        self.assertEqual(len(enfa.transition_function), 2)
+        self.assertEqual(enfa.transition_function[("aa", "0")], {"ae"})
+        self.assertEqual(enfa.transition_function[("ae", "1")], {"ad"})
