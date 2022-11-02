@@ -184,25 +184,34 @@ def thomsons_construction(regex):
     if regex == '':
         return _handle_empty_expression(node_gen)
 
-    if regex == '0':
-        return _handle_symbol(regex, node_gen)
+    nfa_stack = []
+    for e in regex:
+        if e in ALPHABET:
+            symbol_nfa = _handle_symbol(e, node_gen)
+            nfa_stack.append(symbol_nfa)
 
-    if regex == '01+':
-        enfa1 = _handle_symbol("0", node_gen)
-        enfa2 = _handle_symbol("1", node_gen)
+        if e == CONCATENATION[0]:
+            enfa2 = nfa_stack.pop()
+            enfa1 = nfa_stack.pop()
 
-        return _handle_union(enfa1, enfa2, node_gen)
+            concatenation_enfa = _handle_concatenation(enfa1, enfa2, node_gen)
+            nfa_stack.append(concatenation_enfa)
 
-    if regex == '01.':
-        enfa1 = _handle_symbol("0", node_gen)
-        enfa2 = _handle_symbol("1", node_gen)
+        if e == UNION[0]:
+            enfa2 = nfa_stack.pop()
+            enfa1 = nfa_stack.pop()
 
-        return _handle_concatenation(enfa1, enfa2, node_gen)
+            union_enfa = _handle_union(enfa1, enfa2, node_gen)
+            nfa_stack.append(union_enfa)
 
-    if regex == '0*':
-        enfa1 = _handle_symbol("0", node_gen)
+        if e == KLEENEE[0]:
+            enfa1 = nfa_stack.pop()
 
-        return _handle_kleene_star(enfa1, node_gen)
+            kleene_star_nfa = _handle_kleene_star(enfa1, node_gen)
+            nfa_stack.append(kleene_star_nfa)
+
+    result_enfa = nfa_stack.pop()
+    return result_enfa
 
 if __name__ == "__main__":
     regex = "0(0+1)*1"
