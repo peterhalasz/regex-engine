@@ -23,3 +23,15 @@ class RegexTest(unittest.TestCase):
         }
 
         self.assertEqual(enfa.transition_function, expected_transition_function)
+
+    def test_thomsons_construction_single_symbol_regex(self):
+        enfa = thomsons_construction("0")
+
+        self.assertEqual(enfa.starting_state, "aa")
+        self.assertEqual(enfa.final_states, "ab")
+
+        expected_transition_function = {
+                ("aa", "0"): "ab"
+        }
+
+        self.assertEqual(enfa.transition_function, expected_transition_function)

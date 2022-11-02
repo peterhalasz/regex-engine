@@ -12,8 +12,6 @@ def node_name_generator():
         for j in range(ord('a'),ord('z')+1):
             yield chr(i)+chr(j)
 
-NODE_GEN = node_name_generator()
-
 def _get_operator(operator):
     if operator == "*":
         return KLEENEE
@@ -73,9 +71,9 @@ def shunting_yard(regex):
 
     return output
 
-def _handle_empty_expression():
-    starting_state = NODE_GEN.__next__()
-    final_state = NODE_GEN.__next__()
+def _handle_empty_expression(node_gen):
+    starting_state = node_gen.__next__()
+    final_state = node_gen.__next__()
 
     enfa = ENfa(
         (starting_state, final_state),
@@ -89,15 +87,15 @@ def _handle_empty_expression():
 
     return enfa
 
-def _handle_symbol(symbol):
-    starting_state = NODE_GEN.__next__()
-    final_state = NODE_GEN.__next__()
+def _handle_symbol(symbol, node_gen):
+    starting_state = node_gen.__next__()
+    final_state = node_gen.__next__()
 
     enfa = ENfa(
         (starting_state, final_state),
         ("0", "1"),
         {
-            (starting_state, symbol): {final_state},
+            (starting_state, symbol): final_state,
         },
         starting_state,
         final_state
@@ -181,8 +179,13 @@ def _handle_kleene_star(enfa1):
     return enfa
 
 def thomsons_construction(regex):
+    node_gen = node_name_generator()
+
     if regex == '':
-        return _handle_empty_expression()
+        return _handle_empty_expression(node_gen)
+
+    if regex == '0':
+        return _handle_symbol(regex, node_gen)
 
 if __name__ == "__main__":
     regex = "0(0+1)*1"
