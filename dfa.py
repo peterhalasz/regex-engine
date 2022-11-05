@@ -22,6 +22,9 @@ class Dfa():
     def plot(self):
         plot_automaton(self.transition_function, self.starting_state, self.final_states)
 
+    def print(self):
+        print_automaton(self.transition_function, self.starting_state, self.final_states)
+
     def is_string_accepted(self, input_string):
         current_state = self.starting_state
         for input_symbol in input_string:
@@ -57,7 +60,6 @@ if __name__ == "__main__":
     test_input_string = "0000011001"
 
     dfa = Dfa(transition_function, starting_state, final_states)
-    print_automaton(dfa.transition_function, starting_state, final_states)
 
     dfa.is_string_accepted(test_input_string)
     #dfa.plot()
