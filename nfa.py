@@ -37,10 +37,10 @@ class Nfa():
         reachable_states = []
         for key, next_states in self.transition_function.items():
             current_state, input_symbol = key
-            dfa_transition_function[(frozenset(current_state), input_symbol)] = next_states
+            dfa_transition_function[(frozenset({current_state}), input_symbol)] = next_states
             
             reachable_states.append(next_states)
-
+        
         input_symbols = ["0", "1"]
         # Constructing the nfa transition function lazily
         for next_states in reachable_states:
@@ -56,7 +56,6 @@ class Nfa():
                         nfa_next_states = self.transition_function[(state, input_symbol)]
                         for nfa_next_state in nfa_next_states:
                             combined_next_states.add(nfa_next_state)
-
 
                 if combined_next_states:
                     dfa_transition_function[(frozenset(next_states), input_symbol)] = combined_next_states

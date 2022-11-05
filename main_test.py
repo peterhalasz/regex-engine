@@ -4,7 +4,7 @@ from dfa import Dfa
 from nfa import Nfa
 from enfa import ENfa, EPS
 
-from main import compile_and_test_dfa, compile_and_test_nfa, compile_and_test_enfa
+from main import compile_and_test_dfa, compile_and_test_nfa, compile_and_test_enfa, compile_and_test_regex
 
 class MainTest(unittest.TestCase):
     def test_main_dfa_1(self):
@@ -72,3 +72,13 @@ class MainTest(unittest.TestCase):
         self.assertFalse(compile_and_test_enfa(enfa, ""))
         self.assertFalse(compile_and_test_enfa(enfa, "1"))
         self.assertFalse(compile_and_test_enfa(enfa, "1011011"))
+
+    def test_main_regex(self):
+        regex = "0(0+1)*1"
+        self.assertTrue(compile_and_test_regex(regex, "011001"))
+        self.assertTrue(compile_and_test_regex(regex, "0000011001"))
+        self.assertTrue(compile_and_test_regex(regex, "011001"))
+
+        self.assertFalse(compile_and_test_regex(regex, ""))
+        self.assertFalse(compile_and_test_regex(regex, "1"))
+        self.assertFalse(compile_and_test_regex(regex, "1011011"))
