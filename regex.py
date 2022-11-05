@@ -76,8 +76,6 @@ def _handle_empty_expression(node_gen):
     final_state = node_gen.__next__()
 
     enfa = ENfa(
-        (starting_state, final_state),
-        ("0", "1"),
         {
             (starting_state, EPS): {final_state},
         },
@@ -92,8 +90,6 @@ def _handle_symbol(symbol, node_gen):
     final_state = node_gen.__next__()
 
     enfa = ENfa(
-        (starting_state, final_state),
-        ("0", "1"),
         {
             (starting_state, symbol): {final_state},
         },
@@ -108,8 +104,6 @@ def _handle_union(enfa1, enfa2, node_gen):
     final_state = node_gen.__next__()
     
     enfa = ENfa(
-        (starting_state, final_state),
-        ("0", "1"),
         {
             (starting_state, EPS): {enfa1.starting_state, enfa2.starting_state},
             (list(enfa1.final_states)[0], EPS): {final_state},
@@ -131,9 +125,6 @@ def _handle_concatenation(enfa1, enfa2, node_gen):
     new_mid_state = node_gen.__next__()
     
     enfa = ENfa(
-        # TODO: Compute states or remove field from enfa
-        (),
-        ("0", "1"),
         {},
         enfa1.starting_state,
         enfa2.final_states,
@@ -163,8 +154,6 @@ def _handle_kleene_star(enfa1, node_gen):
     final_state = node_gen.__next__()
     
     enfa = ENfa(
-        (starting_state, final_state),
-        ("0", "1"),
         {
             (starting_state, EPS): {final_state, enfa1.starting_state},
             (list(enfa1.final_states)[0], EPS): {final_state, enfa1.starting_state},
@@ -222,8 +211,6 @@ if __name__ == "__main__":
     #enfa.plot()
 
     #print(enfa.transition_function)
-    nfa = enfa.convert_to_nfa2()
+    nfa = enfa.convert_to_nfa()
     #print(nfa.transition_function)
     #nfa.plot()
-
-
