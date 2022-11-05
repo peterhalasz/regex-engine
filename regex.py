@@ -215,12 +215,15 @@ def thomsons_construction(regex):
 
 if __name__ == "__main__":
     regex = "0(0+1)*1"
-    print(regex)
+    #print(regex)
     regex = shunting_yard(regex)
-    print(regex)
+    #print(regex)
     enfa = thomsons_construction("001+*.1.")
+    #enfa.plot()
 
-    enfa.plot()
-    nfa = enfa.convert_to_nfa()
+    #print(enfa.transition_function)
+    nfa = enfa.convert_to_nfa2()
+    #print(nfa.transition_function)
+    #nfa.plot()
 
 
