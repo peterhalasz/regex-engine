@@ -97,10 +97,13 @@ if __name__ == "__main__":
     #e_nfa.plot()
 
     nfa = e_nfa.convert_to_nfa()
-    print(nfa.transition_function)
+    print("Start", nfa.starting_state)
+    print("Final", nfa.final_states)
     #nfa.plot()
-    for k,v in nfa.transition_function.items():
-        print(k, v)
+    nfa.print()
 
-    #printer.print_automaton(e_nfa.transition_function, e_nfa.starting_state, e_nfa.final_states, e_nfa.input_symbols)
-
+    print("DFA")
+    dfa = nfa.convert_to_dfa()
+    #dfa.print()
+    dfa.print()
+    dfa.plot()

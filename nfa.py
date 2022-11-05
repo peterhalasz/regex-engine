@@ -71,7 +71,7 @@ class Nfa():
 
             if state not in dfa_transition_function.values():
                 for symbol in input_symbols:
-                    if (state, symbol) in dfa_transition_function:
+                    if (state, symbol) in dfa_transition_function and self.starting_state not in state:
                         entries_to_delete.append((state, symbol))
 
             all_end_states_from_other_states = [v if k[0] != state else None for k,v in dfa_transition_function.items()]
@@ -97,7 +97,6 @@ class Nfa():
             dfa_state, input_symbol = key
             dfa_transition_function_2[",".join(sorted(dfa_state)), input_symbol] = ",".join(sorted(next_states))
 
-        
         dfa_accepting_states_2 = [",".join(sorted(s)) for s in dfa_accepting_states]
 
         dfa = Dfa(

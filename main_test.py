@@ -2,8 +2,9 @@ import unittest
 
 from dfa import Dfa
 from nfa import Nfa
+from enfa import ENfa, EPS
 
-from main import compile_and_test_dfa, compile_and_test_nfa
+from main import compile_and_test_dfa, compile_and_test_nfa, compile_and_test_enfa
 
 class MainTest(unittest.TestCase):
     def test_main_dfa_1(self):
@@ -46,3 +47,28 @@ class MainTest(unittest.TestCase):
         self.assertFalse(compile_and_test_nfa(nfa, ""))
         self.assertFalse(compile_and_test_nfa(nfa, "1"))
         self.assertFalse(compile_and_test_nfa(nfa, "1011011"))
+
+    def test_main_enfa_1(self):
+        transition_function = {
+            ("A", "0"): {"H"},
+            ("B", EPS): {"C", "I"},
+            ("C", EPS): {"F", "G"},
+            ("D", EPS): {"B"},
+            ("E", EPS): {"B"},
+            ("F", "0"): {"D"},
+            ("G", "1"): {"E"},
+            ("H", EPS): {"C", "I"},
+            ("I", "1"): {"J"},
+        }
+        starting_state = "A"
+        final_states = {"J"}
+
+        enfa = ENfa(transition_function, starting_state, final_states)
+
+        self.assertTrue(compile_and_test_enfa(enfa, "011001"))
+        self.assertTrue(compile_and_test_enfa(enfa, "0000011001"))
+        self.assertTrue(compile_and_test_enfa(enfa, "011001"))
+
+        self.assertFalse(compile_and_test_enfa(enfa, ""))
+        self.assertFalse(compile_and_test_enfa(enfa, "1"))
+        self.assertFalse(compile_and_test_enfa(enfa, "1011011"))
