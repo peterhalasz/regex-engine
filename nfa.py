@@ -112,11 +112,12 @@ class Nfa():
 if __name__ == "__main__":
     transition_function = {
         ("A", "0"): {"A", "B"},
-        ("A", "1"): {"A", "B"},
+        ("A", "1"): {"A"},
+        ("B", "1"): {"C"},
     }
     starting_state = "A"
-    final_states = {"B"}
+    final_states = {"C"}
 
     nfa = Nfa(transition_function, starting_state, final_states)
-    print_automaton(nfa.transition_function, starting_state, final_states)
-    dfa = nfa.convert_to_dfa()
+
+    nfa.plot()
