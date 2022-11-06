@@ -128,17 +128,3 @@ class Nfa:
         )
 
         return dfa
-
-
-if __name__ == "__main__":
-    transition_function = {
-        ("A", "0"): {"A", "B"},
-        ("A", "1"): {"A"},
-        ("B", "1"): {"C"},
-    }
-    starting_state = "A"
-    final_states = {"C"}
-
-    nfa = Nfa(transition_function, starting_state, final_states)
-
-    nfa.plot()

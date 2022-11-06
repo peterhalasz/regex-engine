@@ -45,26 +45,3 @@ class Dfa:
         else:
             print("FAILED - Ended in a non-final state")
             return False
-
-
-if __name__ == "__main__":
-    transition_function = {
-        ("A", "0"): "A",
-        ("A", "1"): "B",
-        ("B", "0"): "C",
-        ("B", "1"): "D",
-        ("C", "1"): "E",
-        ("D", "0"): "E",
-        ("E", "0"): "F",
-        ("F", "1"): "G",
-    }
-    starting_state = "A"
-    final_states = {"G"}
-
-    # The string the dfa will process.
-    test_input_string = "0000011001"
-
-    dfa = Dfa(transition_function, starting_state, final_states)
-
-    dfa.is_string_accepted(test_input_string)
-    # dfa.plot()

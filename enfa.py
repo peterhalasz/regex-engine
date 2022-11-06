@@ -29,7 +29,10 @@ class ENfa:
 
     def print(self):
         print_automaton(
-            self.transition_function, self.starting_state, self.final_states
+            self.transition_function,
+            self.starting_state,
+            self.final_states,
+            is_epsilon=True,
         )
 
     def _remove_inaccessable_nodes(self, transition_function, starting_state):
@@ -102,34 +105,3 @@ class ENfa:
         )
 
         return nfa
-
-
-if __name__ == "__main__":
-    transition_function = {
-        ("A", "0"): {"H"},
-        ("B", EPS): {"C", "I"},
-        ("C", EPS): {"F", "G"},
-        ("D", EPS): {"B"},
-        ("E", EPS): {"B"},
-        ("F", "0"): {"D"},
-        ("G", "1"): {"E"},
-        ("H", EPS): {"C", "I"},
-        ("I", "1"): {"J"},
-    }
-    starting_state = "A"
-    final_states = {"J"}
-
-    e_nfa = ENfa(transition_function, starting_state, final_states)
-    # e_nfa.plot()
-
-    nfa = e_nfa.convert_to_nfa()
-    print("Start", nfa.starting_state)
-    print("Final", nfa.final_states)
-    # nfa.plot()
-    nfa.print()
-
-    print("DFA")
-    dfa = nfa.convert_to_dfa()
-    # dfa.print()
-    dfa.print()
-    dfa.plot()

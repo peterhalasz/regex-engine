@@ -1,8 +1,13 @@
 from tabulate import tabulate
 
 
-def print_automaton(transition_function, starting_state, final_states):
+def print_automaton(
+    transition_function, starting_state, final_states, is_epsilon=False
+):
     input_symbols = ["0", "1"]
+
+    if is_epsilon:
+        input_symbols.append("ε")
 
     states = set()
     for state, _ in transition_function:

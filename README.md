@@ -13,3 +13,4 @@ converted to a DFA, that can actually run the matching.
 [] Refactor NFA-DFA algorithm
 [] Add more integration tests
 [] Add comments / docs
+[] Fix start and final state in the printer

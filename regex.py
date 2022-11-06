@@ -221,17 +221,3 @@ def create_enfa_from_regex(regex):
     postfix_regex = shunting_yard(regex)
 
     return thomsons_construction(postfix_regex)
-
-
-if __name__ == "__main__":
-    regex = "0(0+1)*1"
-    enfa = create_enfa_from_regex(regex)
-    # enfa.plot()
-
-    # print(enfa.transition_function)
-    nfa = enfa.convert_to_nfa()
-    print(nfa.transition_function)
-    # nfa.plot()
-    dfa = nfa.convert_to_dfa()
-    dfa.plot()
-    dfa.print()
