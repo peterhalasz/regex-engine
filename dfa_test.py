@@ -2,6 +2,7 @@ import unittest
 
 from dfa import Dfa
 
+
 class DfaTest(unittest.TestCase):
     def test_dfa_1(self):
         transition_function = {
@@ -24,7 +25,6 @@ class DfaTest(unittest.TestCase):
         self.assertFalse(dfa.is_string_accepted(""))
         self.assertFalse(dfa.is_string_accepted("1"))
         self.assertFalse(dfa.is_string_accepted("1011001"))
-
 
     def test_dfa_2(self):
         transition_function = {

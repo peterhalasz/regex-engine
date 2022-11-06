@@ -3,8 +3,8 @@ import unittest
 from enfa import EPS
 from regex import shunting_yard, thomsons_construction
 
-class RegexTest(unittest.TestCase):
 
+class RegexTest(unittest.TestCase):
     def test_shunting_yard(self):
         self.assertEqual(shunting_yard("0"), "0")
         self.assertEqual(shunting_yard("01"), "01.")
@@ -18,9 +18,7 @@ class RegexTest(unittest.TestCase):
         self.assertEqual(enfa.starting_state, "aa")
         self.assertEqual(enfa.final_states, {"ab"})
 
-        expected_transition_function = {
-                ("aa", EPS): {"ab"}
-        }
+        expected_transition_function = {("aa", EPS): {"ab"}}
 
         self.assertEqual(enfa.transition_function, expected_transition_function)
 
@@ -30,9 +28,7 @@ class RegexTest(unittest.TestCase):
         self.assertEqual(enfa.starting_state, "aa")
         self.assertEqual(enfa.final_states, {"ab"})
 
-        expected_transition_function = {
-                ("aa", "0"): {"ab"}
-        }
+        expected_transition_function = {("aa", "0"): {"ab"}}
 
         self.assertEqual(enfa.transition_function, expected_transition_function)
 
@@ -102,12 +98,12 @@ class RegexTest(unittest.TestCase):
         self.assertEqual(enfa.final_states, {"am"})
 
         self.assertEqual(len(enfa.transition_function), 9)
-        self.assertEqual(enfa.transition_function[('aa', '0')], {'ak'})
-        self.assertEqual(enfa.transition_function[('ah', 'ε')], {'ag', 'an'})
-        self.assertEqual(enfa.transition_function[('ag', 'ε')], {'ae', 'ac'})
-        self.assertEqual(enfa.transition_function[('ad', 'ε')], {'ah'})
-        self.assertEqual(enfa.transition_function[('af', 'ε')], {'ah'})
-        self.assertEqual(enfa.transition_function[('ac', '0')], {'ad'})
-        self.assertEqual(enfa.transition_function[('ae', '1')], {'af'})
-        self.assertEqual(enfa.transition_function[('ak', 'ε')], {'ag', 'an'})
-        self.assertEqual(enfa.transition_function[('an', '1')], {'am'})
+        self.assertEqual(enfa.transition_function[("aa", "0")], {"ak"})
+        self.assertEqual(enfa.transition_function[("ah", "ε")], {"ag", "an"})
+        self.assertEqual(enfa.transition_function[("ag", "ε")], {"ae", "ac"})
+        self.assertEqual(enfa.transition_function[("ad", "ε")], {"ah"})
+        self.assertEqual(enfa.transition_function[("af", "ε")], {"ah"})
+        self.assertEqual(enfa.transition_function[("ac", "0")], {"ad"})
+        self.assertEqual(enfa.transition_function[("ae", "1")], {"af"})
+        self.assertEqual(enfa.transition_function[("ak", "ε")], {"ag", "an"})
+        self.assertEqual(enfa.transition_function[("an", "1")], {"am"})

@@ -2,6 +2,7 @@ import unittest
 
 from enfa import ENfa, EPS
 
+
 class ENfaTest(unittest.TestCase):
     def test_enfa_1(self):
         transition_function = {
@@ -21,13 +22,13 @@ class ENfaTest(unittest.TestCase):
         nfa = e_nfa.convert_to_nfa()
 
         expected_nfa_tranisition_function = {
-            ('A', '0'): {'D'},
-            ('A', '1'): {'B', 'E'},
-            ('B', '1'): {'A'},
-            ('C', '0'): {'D'},
-            ('C', '1'): {'E'},
-            ('D', '0'): {'C'},
-            ('E', '0'): {'C'},
+            ("A", "0"): {"D"},
+            ("A", "1"): {"B", "E"},
+            ("B", "1"): {"A"},
+            ("C", "0"): {"D"},
+            ("C", "1"): {"E"},
+            ("D", "0"): {"C"},
+            ("E", "0"): {"C"},
         }
 
         self.assertDictEqual(nfa.transition_function, expected_nfa_tranisition_function)
@@ -52,13 +53,13 @@ class ENfaTest(unittest.TestCase):
         nfa = e_nfa.convert_to_nfa()
 
         expected_nfa_tranisition_function = {
-            ('A', '0'): {'H'},
-            ('H', '1'): {'J', 'E'},
-            ('D', '1'): {'J', 'E'},
-            ('D', '0'): {'D'},
-            ('E', '1'): {'J', 'E'},
-            ('E', '0') :{'D'},
-            ('H', '0'): {'D'},
+            ("A", "0"): {"H"},
+            ("H", "1"): {"J", "E"},
+            ("D", "1"): {"J", "E"},
+            ("D", "0"): {"D"},
+            ("E", "1"): {"J", "E"},
+            ("E", "0"): {"D"},
+            ("H", "0"): {"D"},
         }
 
         self.assertDictEqual(nfa.transition_function, expected_nfa_tranisition_function)

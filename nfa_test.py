@@ -2,8 +2,8 @@ import unittest
 
 from nfa import Nfa
 
-class NfaTest(unittest.TestCase):
 
+class NfaTest(unittest.TestCase):
     def test_convert_to_dfa_1(self):
         transition_function = {
             ("A", "0"): {"A", "B"},
@@ -17,12 +17,12 @@ class NfaTest(unittest.TestCase):
         dfa = nfa.convert_to_dfa()
 
         expected_dfa_tranisition_function = {
-            ('A', '0'): 'A,B',
-            ('A', '1'): 'A',
-            ('A,B', '1'): 'A,C',
-            ('A,B', '0'): 'A,B',
-            ('A,C', '1'): 'A',
-            ('A,C', '0'): 'A,B'
+            ("A", "0"): "A,B",
+            ("A", "1"): "A",
+            ("A,B", "1"): "A,C",
+            ("A,B", "0"): "A,B",
+            ("A,C", "1"): "A",
+            ("A,C", "0"): "A,B",
         }
 
         self.assertDictEqual(dfa.transition_function, expected_dfa_tranisition_function)
@@ -43,18 +43,18 @@ class NfaTest(unittest.TestCase):
         dfa = nfa.convert_to_dfa()
 
         expected_dfa_tranisition_function = {
-            ('A', '0'): 'A',
-            ('A', '1'): 'B',
-            ('B', '1'): 'B',
-            ('B', '0'): 'B,C',
-            ('B,C', '0'): 'B,C',
-            ('B,C', '1'): 'B,C',
+            ("A", "0"): "A",
+            ("A", "1"): "B",
+            ("B", "1"): "B",
+            ("B", "0"): "B,C",
+            ("B,C", "0"): "B,C",
+            ("B,C", "1"): "B,C",
         }
 
         self.assertDictEqual(dfa.transition_function, expected_dfa_tranisition_function)
 
-    #TODO: Make this work. Bug when nfa-dfa and starting state changes.
-    #def test_convert_to_dfa_3(self):
+    # TODO: Make this work. Bug when nfa-dfa and starting state changes.
+    # def test_convert_to_dfa_3(self):
     #    transition_function = {
     #        ("A", "0"): {"A", "B"},
     #        ("A", "1"): {"A", "B"},
@@ -85,12 +85,12 @@ class NfaTest(unittest.TestCase):
         dfa = nfa.convert_to_dfa()
 
         expected_dfa_tranisition_function = {
-            ('A', '0'): 'A',
-            ('A', '1'): 'A,B',
-            ('A,B', '0'): 'A',
-            ('A,B', '1'): 'A,B,C',
-            ('A,B,C', '0'): 'A',
-            ('A,B,C', '1'): 'A,B,C',
+            ("A", "0"): "A",
+            ("A", "1"): "A,B",
+            ("A,B", "0"): "A",
+            ("A,B", "1"): "A,B,C",
+            ("A,B,C", "0"): "A",
+            ("A,B,C", "1"): "A,B,C",
         }
 
         self.assertDictEqual(dfa.transition_function, expected_dfa_tranisition_function)

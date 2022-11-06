@@ -9,7 +9,8 @@ A simple implementation of an e-nfa.
 
 EPS = "ε"
 
-class ENfa():
+
+class ENfa:
     def __init__(self, transition_function, starting_state, final_states):
         # Transition function. Usually denoted by delta.
         # Here implemented as a tuple to set of strings dict.
@@ -27,12 +28,16 @@ class ENfa():
         plot_automaton(self.transition_function, self.starting_state, self.final_states)
 
     def print(self):
-        print_automaton(self.transition_function, self.starting_state, self.final_states)
+        print_automaton(
+            self.transition_function, self.starting_state, self.final_states
+        )
 
     def _remove_inaccessable_nodes(self, transition_function, starting_state):
         result_transition_function = {}
 
-        transition_end_nodes = [node for nodes in transition_function.values() for node in nodes]
+        transition_end_nodes = [
+            node for nodes in transition_function.values() for node in nodes
+        ]
 
         for transition in transition_function:
             if transition[0] == starting_state or transition[0] in transition_end_nodes:
@@ -41,34 +46,54 @@ class ENfa():
         return result_transition_function
 
     def _remove_eps_transitions(self, transition_function):
-        eps_transitions = {k:v for k,v in transition_function.items() if k[1] == EPS}
-        nfa_transition_function = {k:v for k,v in transition_function.items() if k[1] != EPS}
+        eps_transitions = {k: v for k, v in transition_function.items() if k[1] == EPS}
+        nfa_transition_function = {
+            k: v for k, v in transition_function.items() if k[1] != EPS
+        }
 
         for eps_transition in eps_transitions:
-            transitions_from_eps_end_state = {k:v for k,v in transition_function.items() if k[0] in transition_function[eps_transition]}
-            
+            transitions_from_eps_end_state = {
+                k: v
+                for k, v in transition_function.items()
+                if k[0] in transition_function[eps_transition]
+            }
+
             for eps_end_transition in transitions_from_eps_end_state:
-                if (eps_transition[0], eps_end_transition[1]) in nfa_transition_function.keys():
-                    nfa_transition_function[(eps_transition[0], eps_end_transition[1])] = nfa_transition_function[(eps_transition[0], eps_end_transition[1])].union(transitions_from_eps_end_state[eps_end_transition])
+                if (
+                    eps_transition[0],
+                    eps_end_transition[1],
+                ) in nfa_transition_function.keys():
+                    nfa_transition_function[
+                        (eps_transition[0], eps_end_transition[1])
+                    ] = nfa_transition_function[
+                        (eps_transition[0], eps_end_transition[1])
+                    ].union(
+                        transitions_from_eps_end_state[eps_end_transition]
+                    )
                 else:
-                    nfa_transition_function[(eps_transition[0], eps_end_transition[1])] = transitions_from_eps_end_state[eps_end_transition] 
-        
+                    nfa_transition_function[
+                        (eps_transition[0], eps_end_transition[1])
+                    ] = transitions_from_eps_end_state[eps_end_transition]
+
         return nfa_transition_function
 
     def convert_to_nfa(self):
         nfa_starting_state = self.starting_state
 
-        nfa_transition_function = {k:v for k,v in self.transition_function.items() }
+        nfa_transition_function = {k: v for k, v in self.transition_function.items()}
 
         while True:
-            nfa_transition_function = self._remove_eps_transitions(nfa_transition_function)
+            nfa_transition_function = self._remove_eps_transitions(
+                nfa_transition_function
+            )
 
-            e = {k:v for k,v in nfa_transition_function.items() if k[1] == EPS}
+            e = {k: v for k, v in nfa_transition_function.items() if k[1] == EPS}
             if not e:
                 break
 
-
-        nfa_transition_function = self._remove_inaccessable_nodes(nfa_transition_function, nfa_starting_state)
+        nfa_transition_function = self._remove_inaccessable_nodes(
+            nfa_transition_function, nfa_starting_state
+        )
 
         nfa = Nfa(
             nfa_transition_function,
@@ -77,6 +102,7 @@ class ENfa():
         )
 
         return nfa
+
 
 if __name__ == "__main__":
     transition_function = {
@@ -94,16 +120,16 @@ if __name__ == "__main__":
     final_states = {"J"}
 
     e_nfa = ENfa(transition_function, starting_state, final_states)
-    #e_nfa.plot()
+    # e_nfa.plot()
 
     nfa = e_nfa.convert_to_nfa()
     print("Start", nfa.starting_state)
     print("Final", nfa.final_states)
-    #nfa.plot()
+    # nfa.plot()
     nfa.print()
 
     print("DFA")
     dfa = nfa.convert_to_dfa()
-    #dfa.print()
+    # dfa.print()
     dfa.print()
     dfa.plot()

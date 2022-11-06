@@ -4,6 +4,7 @@ def validate_symbols(input_symbols, input_string):
             return False
     return True
 
+
 def validate_states(states, starting_state, final_states):
     if starting_state not in states:
         return False
@@ -11,6 +12,7 @@ def validate_states(states, starting_state, final_states):
         if final_state not in states:
             return False
     return True
+
 
 def validate_transitions(states, input_symbols, transition_function):
     for key, next_state in transition_function.items():
@@ -23,8 +25,10 @@ def validate_transitions(states, input_symbols, transition_function):
             return False
     return True
 
-def validate_automaton(input_symbols, states, starting_state, final_states, transition_function):
-    return (
-        validate_states(states, starting_state, final_states) and
-        validate_transitions(states, input_symbols, transition_function)
-    )
+
+def validate_automaton(
+    input_symbols, states, starting_state, final_states, transition_function
+):
+    return validate_states(
+        states, starting_state, final_states
+    ) and validate_transitions(states, input_symbols, transition_function)

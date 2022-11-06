@@ -1,12 +1,13 @@
 from tabulate import tabulate
 
+
 def print_automaton(transition_function, starting_state, final_states):
     input_symbols = ["0", "1"]
 
     states = set()
     for state, _ in transition_function:
         states.add(state)
-    
+
     table = []
     for state in sorted(states):
         table_row = ["", state]
@@ -24,6 +25,6 @@ def print_automaton(transition_function, starting_state, final_states):
                 table_row.append("-")
         table.append(table_row)
 
-    headers = ['State', *[i for i in input_symbols]]
+    headers = ["State", *[i for i in input_symbols]]
 
     print(tabulate(table, headers=headers))

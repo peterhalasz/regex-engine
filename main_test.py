@@ -4,12 +4,19 @@ from dfa import Dfa
 from nfa import Nfa
 from enfa import ENfa, EPS
 
-from main import compile_and_test_dfa, compile_and_test_nfa, compile_and_test_enfa, compile_and_test_regex
+from main import (
+    compile_and_test_dfa,
+    compile_and_test_nfa,
+    compile_and_test_enfa,
+    compile_and_test_regex,
+)
+
 
 class MainTest(unittest.TestCase):
     def test_main_dfa_1(self):
         transition_function = {
-            ("A", "0"): "A", ("A", "1"): "B",
+            ("A", "0"): "A",
+            ("A", "1"): "B",
             ("B", "0"): "C",
             ("B", "1"): "D",
             ("C", "1"): "E",

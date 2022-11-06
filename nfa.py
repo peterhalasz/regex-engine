@@ -7,7 +7,9 @@ from printer import print_automaton
 
 A simple implementation of an nfa.
 """
-class Nfa():
+
+
+class Nfa:
     def __init__(self, transition_function, starting_state, final_states):
         # Transition function. Usually denoted by delta.
         # Here implemented as a tuple to set of strings dict.
@@ -25,9 +27,11 @@ class Nfa():
         plot_automaton(self.transition_function, self.starting_state, self.final_states)
 
     def print(self):
-        print_automaton(self.transition_function, self.starting_state, self.final_states)
+        print_automaton(
+            self.transition_function, self.starting_state, self.final_states
+        )
 
-    #TODO: Refactor
+    # TODO: Refactor
     def convert_to_dfa(self):
         # A dict of a tuple of a set of states and an input symbol to a set of states
         dfa_transition_function = {}
@@ -37,10 +41,12 @@ class Nfa():
         reachable_states = []
         for key, next_states in self.transition_function.items():
             current_state, input_symbol = key
-            dfa_transition_function[(frozenset({current_state}), input_symbol)] = next_states
-            
+            dfa_transition_function[
+                (frozenset({current_state}), input_symbol)
+            ] = next_states
+
             reachable_states.append(next_states)
-        
+
         input_symbols = ["0", "1"]
         # Constructing the nfa transition function lazily
         for next_states in reachable_states:
@@ -53,14 +59,21 @@ class Nfa():
                 # This nfa state can include multiple dfa states
                 for state in next_states:
                     if (state, input_symbol) in self.transition_function:
-                        nfa_next_states = self.transition_function[(state, input_symbol)]
+                        nfa_next_states = self.transition_function[
+                            (state, input_symbol)
+                        ]
                         for nfa_next_state in nfa_next_states:
                             combined_next_states.add(nfa_next_state)
 
                 if combined_next_states:
-                    dfa_transition_function[(frozenset(next_states), input_symbol)] = combined_next_states
+                    dfa_transition_function[
+                        (frozenset(next_states), input_symbol)
+                    ] = combined_next_states
 
-                    if combined_next_states != next_states and combined_next_states not in reachable_states:
+                    if (
+                        combined_next_states != next_states
+                        and combined_next_states not in reachable_states
+                    ):
                         reachable_states.append(combined_next_states)
 
         # Delete entires that are not reaching a state and unreachable states
@@ -70,11 +83,19 @@ class Nfa():
 
             if state not in dfa_transition_function.values():
                 for symbol in input_symbols:
-                    if (state, symbol) in dfa_transition_function and self.starting_state not in state:
+                    if (
+                        (state, symbol) in dfa_transition_function
+                        and self.starting_state not in state
+                    ):
                         entries_to_delete.append((state, symbol))
 
-            all_end_states_from_other_states = [v if k[0] != state else None for k,v in dfa_transition_function.items()]
-            if state not in all_end_states_from_other_states and ",".join(state) != self.starting_state:
+            all_end_states_from_other_states = [
+                v if k[0] != state else None for k, v in dfa_transition_function.items()
+            ]
+            if (
+                state not in all_end_states_from_other_states
+                and ",".join(state) != self.starting_state
+            ):
                 for symbol in input_symbols:
                     if (state, symbol) in dfa_transition_function:
                         entries_to_delete.append((state, symbol))
@@ -94,7 +115,9 @@ class Nfa():
         dfa_transition_function_2 = {}
         for key, next_states in dfa_transition_function.items():
             dfa_state, input_symbol = key
-            dfa_transition_function_2[",".join(sorted(dfa_state)), input_symbol] = ",".join(sorted(next_states))
+            dfa_transition_function_2[
+                ",".join(sorted(dfa_state)), input_symbol
+            ] = ",".join(sorted(next_states))
 
         dfa_accepting_states_2 = [",".join(sorted(s)) for s in dfa_accepting_states]
 
