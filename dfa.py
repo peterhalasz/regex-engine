@@ -34,14 +34,13 @@ class Dfa:
         for input_symbol in input_string:
 
             if (current_state, input_symbol) not in self.transition_function:
-                print("FAILED - Does not terminate")
+                # FAILED: automaton does not terminate
                 return False
 
             current_state = self.transition_function[(current_state, input_symbol)]
 
         if current_state in self.final_states:
-            print("ACCEPTED")
             return True
         else:
-            print("FAILED - Ended in a non-final state")
+            # Failed: automaton terminates in a non-final state
             return False

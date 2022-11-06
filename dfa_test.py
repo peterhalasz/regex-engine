@@ -39,3 +39,19 @@ class DfaTest(unittest.TestCase):
         self.assertFalse(dfa.is_string_accepted(""))
         self.assertFalse(dfa.is_string_accepted("1"))
         self.assertFalse(dfa.is_string_accepted("01"))
+
+    def test_dfa_3(self):
+        transition_function = {
+            ("A", "0"): "A",
+        }
+        starting_state = "A"
+        final_states = {"A"}
+        dfa = Dfa(transition_function, starting_state, final_states)
+
+        self.assertTrue(dfa.is_string_accepted(""))
+        self.assertTrue(dfa.is_string_accepted("0"))
+        self.assertTrue(dfa.is_string_accepted("00"))
+
+        self.assertFalse(dfa.is_string_accepted("1"))
+        self.assertFalse(dfa.is_string_accepted("01"))
+        self.assertFalse(dfa.is_string_accepted("101"))
