@@ -90,8 +90,10 @@ class ENfa:
                 nfa_transition_function
             )
 
-            e = {k: v for k, v in nfa_transition_function.items() if k[1] == EPS}
-            if not e:
+            eps_transitions = {
+                k: v for k, v in nfa_transition_function.items() if k[1] == EPS
+            }
+            if not eps_transitions:
                 break
 
         nfa_transition_function = self._remove_inaccessable_nodes(
