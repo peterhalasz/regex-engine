@@ -31,24 +31,72 @@ class Nfa:
             self.transition_function, self.starting_state, self.final_states
         )
 
-    # TODO: Refactor
-    def convert_to_dfa(self):
-        # A dict of a tuple of a set of states and an input symbol to a set of states
+    def _get_reachable_states(self):
+        reachable_states = []
+        for _, next_states in self.transition_function.items():
+            reachable_states.append(next_states)
+
+        return reachable_states
+
+    def _get_dfa_transition_function(self):
         dfa_transition_function = {}
 
-        # Add the nfa transitions to the dfa's transition function
-        # Create a list states that are reachable
-        reachable_states = []
         for key, next_states in self.transition_function.items():
             current_state, input_symbol = key
             dfa_transition_function[
                 (frozenset({current_state}), input_symbol)
             ] = next_states
 
-            reachable_states.append(next_states)
+        return dfa_transition_function
 
+    def _get_dfa_accepting_states(self, dfa_transition_function):
+        dfa_accepting_states = set()
+
+        # Creating the dfa's accepting states
+        for state, _ in dfa_transition_function:
+            if state.intersection(self.final_states):
+                dfa_accepting_states.add(state)
+
+        dfa_accepting_states_2 = [",".join(sorted(s)) for s in dfa_accepting_states]
+
+        return dfa_accepting_states_2
+
+    def _delete_unreachable_transitions(self, dfa_transition_function):
         input_symbols = ["0", "1"]
-        # Constructing the nfa transition function lazily
+
+        # Delete entires that are not reaching a state and unreachable states
+        entries_to_delete = []
+        for key, _ in dfa_transition_function.items():
+            state, _ = key
+
+            if state not in dfa_transition_function.values():
+                for symbol in input_symbols:
+                    if (
+                        (state, symbol) in dfa_transition_function
+                        and self.starting_state not in state
+                    ):
+                        entries_to_delete.append((state, symbol))
+
+            all_end_states_from_other_states = [
+                v if k[0] != state else None for k, v in dfa_transition_function.items()
+            ]
+            if (
+                state not in all_end_states_from_other_states
+                and ",".join(state) != self.starting_state
+            ):
+                for symbol in input_symbols:
+                    if (state, symbol) in dfa_transition_function:
+                        entries_to_delete.append((state, symbol))
+
+        for entry in entries_to_delete:
+            if entry in dfa_transition_function:
+                del dfa_transition_function[entry]
+
+    def _construct_dfa_transition_function(
+        self, dfa_transition_function, reachable_states
+    ):
+        input_symbols = ["0", "1"]
+
         for next_states in reachable_states:
             for input_symbol in input_symbols:
 
@@ -76,40 +124,15 @@ class Nfa:
                     ):
                         reachable_states.append(combined_next_states)
 
-        # Delete entires that are not reaching a state and unreachable states
-        entries_to_delete = []
-        for key, next_states in dfa_transition_function.items():
-            state, input_symbol = key
+    def convert_to_dfa(self):
+        dfa_transition_function = self._get_dfa_transition_function()
+        reachable_states = self._get_reachable_states()
 
-            if state not in dfa_transition_function.values():
-                for symbol in input_symbols:
-                    if (
-                        (state, symbol) in dfa_transition_function
-                        and self.starting_state not in state
-                    ):
-                        entries_to_delete.append((state, symbol))
+        self._construct_dfa_transition_function(
+            dfa_transition_function, reachable_states
+        )
 
-            all_end_states_from_other_states = [
-                v if k[0] != state else None for k, v in dfa_transition_function.items()
-            ]
-            if (
-                state not in all_end_states_from_other_states
-                and ",".join(state) != self.starting_state
-            ):
-                for symbol in input_symbols:
-                    if (state, symbol) in dfa_transition_function:
-                        entries_to_delete.append((state, symbol))
-
-        for entry in entries_to_delete:
-            if entry in dfa_transition_function:
-                del dfa_transition_function[entry]
-
-        dfa_accepting_states = set()
-
-        # Creating the dfa's accepting states
-        for state, _ in dfa_transition_function:
-            if state.intersection(self.final_states):
-                dfa_accepting_states.add(state)
+        self._delete_unreachable_transitions(dfa_transition_function)
 
         # Create the dfa
         dfa_transition_function_2 = {}
@@ -119,12 +142,12 @@ class Nfa:
                 ",".join(sorted(dfa_state)), input_symbol
             ] = ",".join(sorted(next_states))
 
-        dfa_accepting_states_2 = [",".join(sorted(s)) for s in dfa_accepting_states]
+        dfa_accepting_states = self._get_dfa_accepting_states(dfa_transition_function)
 
         dfa = Dfa(
             transition_function=dfa_transition_function_2,
             starting_state=self.starting_state,
-            final_states=dfa_accepting_states_2,
+            final_states=dfa_accepting_states,
         )
 
         return dfa
