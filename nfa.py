@@ -52,14 +52,16 @@ class Nfa:
     def _get_dfa_accepting_states(self, dfa_transition_function):
         dfa_accepting_states = set()
 
+        reachable_states = []
+        for _, next_states in dfa_transition_function.items():
+            reachable_states.append(next_states)
+
         # Creating the dfa's accepting states
-        for state, _ in dfa_transition_function:
+        for state in reachable_states:
             if state.intersection(self.final_states):
-                dfa_accepting_states.add(state)
+                dfa_accepting_states.add(",".join(sorted(state)))
 
-        dfa_accepting_states_2 = [",".join(sorted(s)) for s in dfa_accepting_states]
-
-        return dfa_accepting_states_2
+        return dfa_accepting_states
 
     def _delete_unreachable_transitions(self, dfa_transition_function):
         input_symbols = ["0", "1"]
