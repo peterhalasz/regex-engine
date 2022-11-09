@@ -1,4 +1,4 @@
-from main import compile_and_test_regex as match
+from main import match
 
 import re
 
