@@ -61,6 +61,11 @@ class ENfa:
                 if k[0] in transition_function[eps_transition]
             }
 
+            # TODO: This is not nice. Extract instead of manipulating enfa.
+            end_states = eps_transitions[eps_transition]
+            if end_states.intersection(self.final_states):
+                self.final_states.add(eps_transition[0])
+
             for eps_end_transition in transitions_from_eps_end_state:
                 if (
                     eps_transition[0],

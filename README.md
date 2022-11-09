@@ -17,4 +17,3 @@ converted to a DFA. The DFA can actually run the matching.
  - [ ] Add more integration tests
  - [ ] Add comments / docs
  - [ ] Fix start and final state in the printer
- - [ ] Fix final state handling for NFA-DFA conversion
