@@ -26,5 +26,3 @@ if __name__ == "__main__":
     dfa = nfa.convert_to_dfa()
     dfa.print()
     dfa.plot()
-
-    input("Press return to continue")
