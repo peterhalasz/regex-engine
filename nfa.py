@@ -11,16 +11,12 @@ A simple implementation of an nfa.
 
 class Nfa:
     def __init__(self, transition_function, starting_state, final_states):
-        # Transition function. Usually denoted by delta.
-        # Here implemented as a tuple to set of strings dict.
         # (state, input symbol) -> next states
         self.transition_function = transition_function
 
-        # Start state. Usually denoted by q0.
         self.starting_state = starting_state
 
-        # A finite set of accepting / final states. Usually denoted by F.
-        # F has to be a subset of Q.
+        # A finite set of accepting states.
         self.final_states = final_states
 
     def plot(self):
@@ -127,6 +123,11 @@ class Nfa:
                         reachable_states.append(combined_next_states)
 
     def convert_to_dfa(self):
+        """Converts the nfa to a dfa.
+
+        Returns:
+            The dfa converted from the nfa.
+        """
         dfa_transition_function = self._get_dfa_transition_function()
         reachable_states = self._get_reachable_states()
 

@@ -12,16 +12,12 @@ EPS = "ε"
 
 class ENfa:
     def __init__(self, transition_function, starting_state, final_states):
-        # Transition function. Usually denoted by delta.
-        # Here implemented as a tuple to set of strings dict.
         # (state, input symbol) -> next states
         self.transition_function = transition_function
 
-        # Start state. Usually denoted by q0.
         self.starting_state = starting_state
 
-        # A finite set of accepting / final states. Usually denoted by F.
-        # F has to be a subset of Q.
+        # A finite set of accepting / final states.
         self.final_states = final_states
 
     def plot(self):
@@ -86,6 +82,11 @@ class ENfa:
         return nfa_transition_function
 
     def convert_to_nfa(self):
+        """Converts the e-nfa to an nfa.
+
+        Returns:
+            The nfa converted from the e-nfa.
+        """
         nfa_starting_state = self.starting_state
 
         nfa_transition_function = {k: v for k, v in self.transition_function.items()}

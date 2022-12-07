@@ -8,7 +8,7 @@ ALPHABET = {"0", "1"}
 OPERATORS = {KLEENEE[0], CONCATENATION[0], UNION[0]}
 
 
-def node_name_generator():
+def _node_name_generator():
     for i in range(ord("a"), ord("z") + 1):
         for j in range(ord("a"), ord("z") + 1):
             yield chr(i) + chr(j)
@@ -182,7 +182,7 @@ def _handle_kleene_star(enfa1, node_gen):
 
 
 def thomsons_construction(regex):
-    node_gen = node_name_generator()
+    node_gen = _node_name_generator()
 
     if regex == "":
         return _handle_empty_expression(node_gen)
@@ -218,6 +218,14 @@ def thomsons_construction(regex):
 
 
 def create_enfa_from_regex(regex):
+    """Creates an e-nfa from a regular expression.
+
+    Args:
+        regex: the regular expression as a string
+
+    Returns:
+        The e-nfa converted from a regex.
+    """
     postfix_regex = shunting_yard(regex)
 
     return thomsons_construction(postfix_regex)
