@@ -27,30 +27,12 @@ class Nfa:
             self.transition_function, self.starting_state, self.final_states
         )
 
-    def _get_reachable_states(self):
-        reachable_states = []
-        for _, next_states in self.transition_function.items():
-            reachable_states.append(next_states)
-
-        return reachable_states
-
-    def _get_dfa_transition_function(self):
-        dfa_transition_function = {}
-
-        for key, next_states in self.transition_function.items():
-            current_state, input_symbol = key
-            dfa_transition_function[
-                (frozenset({current_state}), input_symbol)
-            ] = next_states
-
-        return dfa_transition_function
-
     def _get_dfa_accepting_states(self, dfa_transition_function):
         dfa_accepting_states = set()
 
-        reachable_states = []
-        for _, next_states in dfa_transition_function.items():
-            reachable_states.append(next_states)
+        reachable_states = [
+            next_states for _, next_states in dfa_transition_function.items()
+        ]
 
         # Creating the dfa's accepting states
         for state in reachable_states:
@@ -59,6 +41,7 @@ class Nfa:
 
         return dfa_accepting_states
 
+    # TODO: refactor
     def _delete_unreachable_transitions(self, dfa_transition_function):
         input_symbols = ["0", "1"]
 
@@ -90,10 +73,14 @@ class Nfa:
             if entry in dfa_transition_function:
                 del dfa_transition_function[entry]
 
-    def _construct_dfa_transition_function(
-        self, dfa_transition_function, reachable_states
-    ):
+    # TODO: refactor
+    def _construct_dfa_transition_function(self, dfa_transition_function):
         input_symbols = ["0", "1"]
+
+        # Get all states with an incoming edge
+        reachable_states = [
+            next_states for _, next_states in self.transition_function.items()
+        ]
 
         for next_states in reachable_states:
             for input_symbol in input_symbols:
@@ -122,35 +109,54 @@ class Nfa:
                     ):
                         reachable_states.append(combined_next_states)
 
+    def _format_dfa_transition_function(self, dfa_transition_function):
+        formatted_dfa_transition_function = {}
+
+        for key, next_states in dfa_transition_function.items():
+            dfa_state, input_symbol = key
+            formatted_dfa_transition_function[
+                ",".join(sorted(dfa_state)), input_symbol
+            ] = ",".join(sorted(next_states))
+
+        return formatted_dfa_transition_function
+
     def convert_to_dfa(self):
         """Converts the nfa to a dfa.
 
         Returns:
             The dfa converted from the nfa.
         """
-        dfa_transition_function = self._get_dfa_transition_function()
-        reachable_states = self._get_reachable_states()
+        # Initialize the dfa transition function
+        dfa_transition_function = {
+            (frozenset([key[0]]), key[1]): next_states
+            for key, next_states in self.transition_function.items()
+        }
 
-        self._construct_dfa_transition_function(
-            dfa_transition_function, reachable_states
-        )
+        self._construct_dfa_transition_function(dfa_transition_function)
 
         self._delete_unreachable_transitions(dfa_transition_function)
 
-        # Create the dfa
-        dfa_transition_function_2 = {}
-        for key, next_states in dfa_transition_function.items():
-            dfa_state, input_symbol = key
-            dfa_transition_function_2[
-                ",".join(sorted(dfa_state)), input_symbol
-            ] = ",".join(sorted(next_states))
-
-        dfa_accepting_states = self._get_dfa_accepting_states(dfa_transition_function)
+        formatted_dfa_transition_function = self._format_dfa_transition_function(
+            dfa_transition_function
+        )
 
         dfa = Dfa(
-            transition_function=dfa_transition_function_2,
+            transition_function=formatted_dfa_transition_function,
             starting_state=self.starting_state,
-            final_states=dfa_accepting_states,
+            final_states=self._get_dfa_accepting_states(dfa_transition_function),
         )
 
         return dfa
+
+
+if __name__ == "__main__":
+    transition_function = {
+        ("A", "0"): {"A", "B"},
+        ("A", "1"): {"A"},
+        ("B", "1"): {"C"},
+    }
+    starting_state = "A"
+    final_states = {"C"}
+
+    nfa = Nfa(transition_function, starting_state, final_states)
+    dfa = nfa.convert_to_dfa()
