@@ -41,37 +41,21 @@ class Nfa:
 
         return dfa_accepting_states
 
-    # TODO: refactor
-    def _delete_unreachable_transitions(self, dfa_transition_function):
-        input_symbols = ["0", "1"]
+    def _delete_unreachable_transitions(self, dfa_transition_function, starting_state):
+        result = {}
 
-        # Delete entires that are not reaching a state and unreachable states
-        entries_to_delete = []
-        for key, _ in dfa_transition_function.items():
-            state, _ = key
+        # Collect all nodes that are an end of a non-self transition
+        reachable_nodes = [
+            end_state
+            for transition, end_state in dfa_transition_function.items()
+            if transition[0] != end_state
+        ]
 
-            if state not in dfa_transition_function.values():
-                for symbol in input_symbols:
-                    if (
-                        (state, symbol) in dfa_transition_function
-                        and self.starting_state not in state
-                    ):
-                        entries_to_delete.append((state, symbol))
+        for transition in dfa_transition_function:
+            if transition[0] == {starting_state} or transition[0] in reachable_nodes:
+                result[transition] = dfa_transition_function[transition]
 
-            all_end_states_from_other_states = [
-                v if k[0] != state else None for k, v in dfa_transition_function.items()
-            ]
-            if (
-                state not in all_end_states_from_other_states
-                and ",".join(state) != self.starting_state
-            ):
-                for symbol in input_symbols:
-                    if (state, symbol) in dfa_transition_function:
-                        entries_to_delete.append((state, symbol))
-
-        for entry in entries_to_delete:
-            if entry in dfa_transition_function:
-                del dfa_transition_function[entry]
+        return result
 
     # TODO: refactor
     def _construct_dfa_transition_function(self, dfa_transition_function):
@@ -134,7 +118,9 @@ class Nfa:
 
         self._construct_dfa_transition_function(dfa_transition_function)
 
-        self._delete_unreachable_transitions(dfa_transition_function)
+        dfa_transition_function = self._delete_unreachable_transitions(
+            dfa_transition_function, self.starting_state
+        )
 
         formatted_dfa_transition_function = self._format_dfa_transition_function(
             dfa_transition_function
@@ -147,16 +133,3 @@ class Nfa:
         )
 
         return dfa
-
-
-if __name__ == "__main__":
-    transition_function = {
-        ("A", "0"): {"A", "B"},
-        ("A", "1"): {"A"},
-        ("B", "1"): {"C"},
-    }
-    starting_state = "A"
-    final_states = {"C"}
-
-    nfa = Nfa(transition_function, starting_state, final_states)
-    dfa = nfa.convert_to_dfa()

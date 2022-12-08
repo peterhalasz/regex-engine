@@ -4,3 +4,4 @@ __pycache__/
 *.gv.png
 out/
 *.pyc
+.DS_Store
