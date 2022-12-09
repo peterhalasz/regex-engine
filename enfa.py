@@ -63,23 +63,36 @@ class ENfa:
                 self.final_states.add(eps_transition[0])
 
             for eps_end_transition in transitions_from_eps_end_state:
+                eps_transition_state = eps_transition[0]
+                eps_end_transition_symbol = eps_end_transition[1]
                 if (
-                    eps_transition[0],
-                    eps_end_transition[1],
+                    eps_transition_state,
+                    eps_end_transition_symbol,
                 ) in nfa_transition_function.keys():
+
                     nfa_transition_function[
-                        (eps_transition[0], eps_end_transition[1])
+                        (eps_transition_state, eps_end_transition_symbol)
                     ] = nfa_transition_function[
-                        (eps_transition[0], eps_end_transition[1])
+                        (eps_transition_state, eps_end_transition_symbol)
                     ].union(
                         transitions_from_eps_end_state[eps_end_transition]
                     )
                 else:
                     nfa_transition_function[
-                        (eps_transition[0], eps_end_transition[1])
+                        (eps_transition_state, eps_end_transition_symbol)
                     ] = transitions_from_eps_end_state[eps_end_transition]
 
         return nfa_transition_function
+
+    def _remove_all_eps_transitions(self, transition_function):
+        while True:
+            transition_function = self._remove_eps_transitions(transition_function)
+
+            # If there are no more epsilon transitions, break
+            if not next((x for x in transition_function.keys() if x[1] == EPS), None):
+                break
+
+        return transition_function
 
     def convert_to_nfa(self):
         """Converts the e-nfa to an nfa.
@@ -91,16 +104,9 @@ class ENfa:
 
         nfa_transition_function = {k: v for k, v in self.transition_function.items()}
 
-        while True:
-            nfa_transition_function = self._remove_eps_transitions(
-                nfa_transition_function
-            )
-
-            eps_transitions = {
-                k: v for k, v in nfa_transition_function.items() if k[1] == EPS
-            }
-            if not eps_transitions:
-                break
+        nfa_transition_function = self._remove_all_eps_transitions(
+            nfa_transition_function
+        )
 
         nfa_transition_function = self._remove_inaccessable_nodes(
             nfa_transition_function, nfa_starting_state
