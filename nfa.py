@@ -42,8 +42,6 @@ class Nfa:
         return dfa_accepting_states
 
     def _delete_unreachable_transitions(self, dfa_transition_function, starting_state):
-        result = {}
-
         # Collect all nodes that are an end of a non-self transition
         reachable_nodes = [
             end_state
@@ -51,22 +49,23 @@ class Nfa:
             if transition[0] != end_state
         ]
 
+        result = {}
+
         for transition in dfa_transition_function:
             if transition[0] == {starting_state} or transition[0] in reachable_nodes:
                 result[transition] = dfa_transition_function[transition]
 
         return result
 
-    # TODO: refactor
     def _construct_dfa_transition_function(self, dfa_transition_function):
         input_symbols = ["0", "1"]
 
         # Get all states with an incoming edge
         reachable_states = [
-            next_states for _, next_states in self.transition_function.items()
+            end_states for _, end_states in self.transition_function.items()
         ]
 
-        for next_states in reachable_states:
+        for end_states in reachable_states:
             for input_symbol in input_symbols:
 
                 combined_next_states = set()
@@ -74,21 +73,20 @@ class Nfa:
                 # Iterate over all states of the nfa
                 # Collect all nfa reachable states from that state
                 # This nfa state can include multiple dfa states
-                for state in next_states:
+                for state in end_states:
                     if (state, input_symbol) in self.transition_function:
                         nfa_next_states = self.transition_function[
                             (state, input_symbol)
                         ]
-                        for nfa_next_state in nfa_next_states:
-                            combined_next_states.add(nfa_next_state)
+                        combined_next_states.update(nfa_next_states)
 
                 if combined_next_states:
                     dfa_transition_function[
-                        (frozenset(next_states), input_symbol)
+                        (frozenset(end_states), input_symbol)
                     ] = combined_next_states
 
                     if (
-                        combined_next_states != next_states
+                        combined_next_states != end_states
                         and combined_next_states not in reachable_states
                     ):
                         reachable_states.append(combined_next_states)
