@@ -1,8 +1,9 @@
-from regex import create_enfa_from_regex
+from regex import Regex
 
 
 def match(regex, input_string):
-    enfa = create_enfa_from_regex(regex)
+    regex = Regex(regex)
+    enfa = regex.create_enfa_from_regex()
     nfa = enfa.convert_to_nfa()
     dfa = nfa.convert_to_dfa()
 
@@ -11,7 +12,9 @@ def match(regex, input_string):
 
 if __name__ == "__main__":
     regex = "0(0+1)*1"
-    enfa = create_enfa_from_regex(regex)
+    regex = Regex(regex)
+    enfa = regex.create_enfa_from_regex()
+
     enfa.print()
     enfa.plot()
 

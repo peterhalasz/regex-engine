@@ -1,19 +1,19 @@
 import unittest
 
 from enfa import EPS
-from regex import shunting_yard, thomsons_construction
+from regex import Regex
 
 
 class RegexTest(unittest.TestCase):
     def test_shunting_yard(self):
-        self.assertEqual(shunting_yard("0"), "0")
-        self.assertEqual(shunting_yard("01"), "01.")
-        self.assertEqual(shunting_yard("0+1"), "01+")
-        self.assertEqual(shunting_yard("(0+1)*0+11"), "01+*0.11.+")
-        self.assertEqual(shunting_yard("0(0+1)*1"), "001+*.1.")
+        self.assertEqual(Regex("0").shunting_yard(), "0")
+        self.assertEqual(Regex("01").shunting_yard(), "01.")
+        self.assertEqual(Regex("0+1").shunting_yard(), "01+")
+        self.assertEqual(Regex("(0+1)*0+11").shunting_yard(), "01+*0.11.+")
+        self.assertEqual(Regex("0(0+1)*1").shunting_yard(), "001+*.1.")
 
     def test_thomsons_construction_empty_regex(self):
-        enfa = thomsons_construction("")
+        enfa = Regex("").thomsons_construction("")
 
         self.assertEqual(enfa.starting_state, "aa")
         self.assertEqual(enfa.final_states, {"ab"})
@@ -23,7 +23,7 @@ class RegexTest(unittest.TestCase):
         self.assertEqual(enfa.transition_function, expected_transition_function)
 
     def test_thomsons_construction_single_symbol_regex(self):
-        enfa = thomsons_construction("0")
+        enfa = Regex("").thomsons_construction("0")
 
         self.assertEqual(enfa.starting_state, "aa")
         self.assertEqual(enfa.final_states, {"ab"})
@@ -33,7 +33,7 @@ class RegexTest(unittest.TestCase):
         self.assertEqual(enfa.transition_function, expected_transition_function)
 
     def test_thomsons_construction_single_union_regex(self):
-        enfa = thomsons_construction("01+")
+        enfa = Regex("").thomsons_construction("01+")
 
         self.assertEqual(enfa.starting_state, "ae")
         self.assertEqual(enfa.final_states, {"af"})
@@ -46,7 +46,7 @@ class RegexTest(unittest.TestCase):
         self.assertEqual(enfa.transition_function[("ad", EPS)], {"af"})
 
     def test_thomsons_construction_single_concatenation_regex(self):
-        enfa = thomsons_construction("01.")
+        enfa = Regex("").thomsons_construction("01.")
 
         self.assertEqual(enfa.starting_state, "aa")
         self.assertEqual(enfa.final_states, {"ad"})
@@ -56,7 +56,7 @@ class RegexTest(unittest.TestCase):
         self.assertEqual(enfa.transition_function[("ae", "1")], {"ad"})
 
     def test_thomsons_construction_single_kleene_star_regex(self):
-        enfa = thomsons_construction("0*")
+        enfa = Regex("").thomsons_construction("0*")
 
         self.assertEqual(enfa.starting_state, "ac")
         self.assertEqual(enfa.final_states, {"ad"})
@@ -67,7 +67,7 @@ class RegexTest(unittest.TestCase):
         self.assertEqual(enfa.transition_function[("ab", EPS)], {"aa", "ad"})
 
     def test_thomsons_construction_double_concatenation_regex(self):
-        enfa = thomsons_construction("01.0.")
+        enfa = Regex("").thomsons_construction("01.0.")
 
         self.assertEqual(enfa.starting_state, "aa")
         self.assertEqual(enfa.final_states, {"ag"})
@@ -78,7 +78,7 @@ class RegexTest(unittest.TestCase):
         self.assertEqual(enfa.transition_function[("ah", "0")], {"ag"})
 
     def test_thomsons_construction_union_and_concatenation_regex(self):
-        enfa = thomsons_construction("01+0.")
+        enfa = Regex("").thomsons_construction("01+0.")
 
         self.assertEqual(enfa.starting_state, "ae")
         self.assertEqual(enfa.final_states, {"ah"})
@@ -92,7 +92,7 @@ class RegexTest(unittest.TestCase):
         self.assertEqual(enfa.transition_function[("ai", "0")], {"ah"})
 
     def test_thomsons_construction_1(self):
-        enfa = thomsons_construction("001+*.1.")
+        enfa = Regex("").thomsons_construction("001+*.1.")
 
         self.assertEqual(enfa.starting_state, "aa")
         self.assertEqual(enfa.final_states, {"am"})

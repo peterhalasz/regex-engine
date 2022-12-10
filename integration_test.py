@@ -3,7 +3,7 @@ import unittest
 from dfa import Dfa
 from nfa import Nfa
 from enfa import ENfa, EPS
-from regex import create_enfa_from_regex
+from regex import Regex
 
 
 def compile_and_test_dfa(dfa, input_string):
@@ -24,7 +24,8 @@ def compile_and_test_enfa(enfa, input_string):
 
 
 def compile_and_test_regex(regex, input_string):
-    enfa = create_enfa_from_regex(regex)
+    regex = Regex(regex)
+    enfa = regex.create_enfa_from_regex()
     nfa = enfa.convert_to_nfa()
     dfa = nfa.convert_to_dfa()
 
