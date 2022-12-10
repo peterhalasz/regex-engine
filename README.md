@@ -1,5 +1,5 @@
-# regex-engine
-An implementation of a regular expression engine.
+# v-rex 🦖
+A verbose implementation of a regular expression engine.
 
 NOTE: This is a work in progess.
 
