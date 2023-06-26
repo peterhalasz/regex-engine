@@ -34,8 +34,8 @@ class Regex:
 
         prev = ""
         for c in regex:
-            if (c in ALPHABET and (prev in ALPHABET or prev == ")" or prev == "*")) or (
-                c == "(" and prev in ALPHABET
+            if (c in ALPHABET or c == "(") and (
+                prev in ALPHABET or prev == ")" or prev == "*"
             ):
                 new_regex += "."
 

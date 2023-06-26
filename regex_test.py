@@ -11,6 +11,7 @@ class RegexTest(unittest.TestCase):
         self.assertEqual(Regex("0+1").shunting_yard(), "01+")
         self.assertEqual(Regex("(0+1)*0+11").shunting_yard(), "01+*0.11.+")
         self.assertEqual(Regex("0(0+1)*1").shunting_yard(), "001+*.1.")
+        self.assertEqual(Regex("(0)(1)").shunting_yard(), "01.")
 
     def test_thomsons_construction_empty_regex(self):
         enfa = Regex("").thomsons_construction("")
